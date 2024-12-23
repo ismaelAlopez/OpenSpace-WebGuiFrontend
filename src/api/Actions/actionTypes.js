@@ -1,3 +1,5 @@
+import { setLanguage } from '.';
+
 /* All the action types are collected here, to make it easier for debugging. */
 const actionTypes = {
   // action types for property tree
@@ -15,6 +17,8 @@ const actionTypes = {
   refreshGroups: 'GROUPS_REFRESH',
   getCustomGroupsOrdering: 'GROUP_ORDERING_GET',
   updateCustomGroupOrdering: 'GROUP_ORDERING_UPDATE',
+  //Language
+  setLanguage: 'SET_LANGUAGE',
 
   updateTime: 'TIME_UPDATE',
   subscribeToTime: 'TIME_SUBSCRIBE',

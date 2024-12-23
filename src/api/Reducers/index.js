@@ -6,6 +6,7 @@ import engineMode from './engineMode';
 import exoplanets from './exoplanets';
 import fetchData from './fetchData';
 import groups from './groups';
+import language from './language';
 import local from './local';
 import luaApi from './luaApi';
 import missions from './missions';
@@ -41,7 +42,8 @@ const openspaceApp = (state = {}, action = {}) => {
     storyTree: storyTree(state.storyTree, action),
     version: version(state.version, action),
     userPanels: userPanels(state.userPanels, action),
-    missions: missions(state.missions, action)
+    missions: missions(state.missions, action),
+    language: language(state.language, action)
   };
 };
 

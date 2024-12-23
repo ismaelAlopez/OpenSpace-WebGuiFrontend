@@ -2,6 +2,9 @@ import React from 'react';
 import { MdLayers, MdSettings } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
+import { useSelector } from 'react-redux';
+// getTranslation is a function that returns the translation of a given key in a given language
+import { getTranslation } from '../../utils/translation';
 
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import SystemMenu from '../SystemMenu/SystemMenu';
@@ -21,6 +24,7 @@ const views = {
 function Sidebar({ showTutorial }) {
   const [view, setView] = React.useState(null);
   const [width, setWidth] = React.useState(300);
+  const language = useSelector((state) => state.language.language);
 
   function onResizeStop(e, direction, ref, delta) {
     setWidth((current) => current + delta.width);
@@ -61,16 +65,16 @@ function Sidebar({ showTutorial }) {
       onResizeStop={onResizeStop}
     >
       <section className={`${styles.Sidebar} ${view ? styles.active : ''}`}>
-        { SelectedView && (<SelectedView closeCallback={selectView} />)}
+        {SelectedView && <SelectedView closeCallback={selectView} />}
         <TabMenu>
           <SystemMenu showTutorial={showTutorial} />
           <TabMenuItem active={isActive('scene')} onClick={selectView('scene')}>
             <MdLayers className={styles.icon} />
-            <SmallLabel refKey="Scene">Scene</SmallLabel>
+            <SmallLabel refKey='Scene'>{getTranslation(language, 'Scene')}</SmallLabel>
           </TabMenuItem>
           <TabMenuItem active={isActive('settings')} onClick={selectView('settings')}>
             <MdSettings className={styles.icon} />
-            <SmallLabel>Settings</SmallLabel>
+            <SmallLabel>{getTranslation(language, 'Settings')}</SmallLabel>
           </TabMenuItem>
         </TabMenu>
       </section>

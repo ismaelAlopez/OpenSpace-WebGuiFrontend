@@ -96,26 +96,22 @@ export const sendFlightControl = (flightControl) => ({
 
 export const startConnection = () => ({
   type: actionTypes.startConnection,
-  payload: {
-  }
+  payload: {}
 });
 
 export const onOpenConnection = () => ({
   type: actionTypes.onOpenConnection,
-  payload: {
-  }
+  payload: {}
 });
 
 export const reloadPropertyTree = () => ({
   type: actionTypes.reloadPropertyTree,
-  payload: {
-  }
+  payload: {}
 });
 
 export const onCloseConnection = () => ({
   type: actionTypes.onCloseConnection,
-  payload: {
-  }
+  payload: {}
 });
 
 export const changeConnectionWait = (value) => ({
@@ -170,8 +166,7 @@ export const addStoryInfo = (info) => ({
 
 export const resetStoryInfo = () => ({
   type: actionTypes.resetStoryInfo,
-  payload: {
-  }
+  payload: {}
 });
 
 export const getVersion = () => ({
@@ -452,4 +447,9 @@ export const addUriToPropertyTree = (data) => ({
 export const removePropertyOwners = (data) => ({
   type: actionTypes.removePropertyOwners,
   payload: data
+});
+
+export const setLanguage = (language) => ({
+  type: actionTypes.setLanguage,
+  payload: language
 });
