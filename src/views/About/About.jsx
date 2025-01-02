@@ -3,56 +3,42 @@ import { connect } from 'react-redux';
 
 import LoadingString from '../../components/common/LoadingString/LoadingString';
 import Row from '../../components/common/Row/Row';
-
+import { getTranslation } from '../../utils/translation';
+import { useSelector } from 'react-redux';
 import logo from './logo.png';
 
 import styles from './About.scss';
 
 const openSpaceVersion = (props) => {
+  const language = useSelector((state) => state.language.language);
   const formatVersion = (version) =>
-    version.major != 255 && version.minor != 255 && version.patch != 255 ?
-      `${version.major}.${version.minor}.${version.patch}` :
-      "Custom";
+    version.major != 255 && version.minor != 255 && version.patch != 255
+      ? `${version.major}.${version.minor}.${version.patch}`
+      : 'Custom';
 
   const currentVersion = (
     <p>
-      OpenSpace version:
-      {' '}
-      {
-        props.hasVersion ?
-          formatVersion(props.version.openSpaceVersion) :
-          <LoadingString loading />
-      }
+      {getTranslation(language, 'Version')}{' '}
+      {props.hasVersion ? formatVersion(props.version.openSpaceVersion) : <LoadingString loading />}
     </p>
   );
 
-  return (
-    <>
-      { currentVersion }
-    </>
-  );
+  return <>{currentVersion}</>;
 };
 
 function About(props) {
+  const language = useSelector((state) => state.language.language);
   return (
     <Row className={styles.about}>
       <section>
-        <img src={logo} alt="OpenSpace Logo" className={styles.img} />
+        <img src={logo} alt='OpenSpace Logo' className={styles.img} />
       </section>
       <section>
         <h1>OpenSpace</h1>
-        <p>
-          OpenSpace is open source interactive data
-          visualization software designed to visualize
-          the entire known universe and portray our
-          ongoing efforts to investigate the cosmos.
-        </p>
+        <p>{getTranslation(language, 'OpenSpaceDesc')}</p>
         {openSpaceVersion(props)}
         <p>
-          &copy; 2014 -
-          {' '}
-          { (new Date()).getUTCFullYear() }
-        &nbsp; OpenSpace Development Team
+          {getTranslation(language, 'Footer')}
           <br />
           openspaceproject.com
         </p>
@@ -66,8 +52,6 @@ const mapStateToProps = (state) => ({
   version: state.version.data
 });
 
-About = connect(
-  mapStateToProps,
-)(About);
+About = connect(mapStateToProps)(About);
 
 export default About;

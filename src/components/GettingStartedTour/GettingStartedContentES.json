@@ -1,0 +1,232 @@
+[ 
+    {
+        "goalType" : null,
+        "title" : "Bienvenido a OpenSpace!",
+        "firstText" : "¡Vamos a empezar explorando el Universo observable!"
+    },
+    {
+        "goalType" : null,
+        "title" : "Descripción general",
+        "firstText" : "En este tutorial vamos a cubrir los siguientes temas:",
+        "bulletList": ["Navegación", "Tiempo", "Contenido"]
+    },
+    {
+        "goalType" : ["geoPosition"],
+        "position" : { "altitude" : { "operator" : "<" , "value" : 3500, "unit" : "km" }}, 
+        "title" : "Navigación",
+        "firstText" : "Vamos acercarnos a la Tierra.",
+        "goalText" : ["Ir a una altitud máxima de 3500 km"],
+        "showMouse" : [{ "button" : "right", "info" : "Clic derecho + arrastrar", "description" : "Acercarse o alejarse"}], 
+        "arrowPosition" : { "x" : 250, "y" : "calc(100% - 150px)"},
+        "arrowRotation" : "up"
+    },
+    {
+        "goalType" : ["geoPosition"],
+        "position" : {"latitude" : { "operator" : "between" , "value" : [50, 94] }, "longitude" : { "operator" : "between" , "value" : [-10, -78] }},
+        "title" : "Navegación",
+        "firstText" : ["¡Vamos para Groenlandia!"],
+        "infoText" : "Esta es la posición { latitud, longitud }.",
+        "goalText" : ["Vaya a la posición { 72 , -44 }"],
+        "showMouse" : [{ "button" : "left", "info" : "Clic izquierdo + arrastrar", "description" : "Orbitar al rededor del planeta"}], 
+        "arrowPosition" : { "x" : 70, "y" : "calc(100% - 150px)"},
+        "arrowRotation" : "up"
+    },
+    {
+        "goalType" : null,
+        "title" : "Navegación",
+        "firstText" : "Tienes dos opciónes para navegar la cámara:",
+        "showMouse" : [{ "button" : "scroll", "info" : "Clic Scroll + arrastrar", "description" : "Girar la camara"},
+                       { "button" : "left", "info" : "Clic izquierdo + arrastrar + shift", "description" : "Girar la camera", "keyboardButton" : "Shift"}]
+    },
+    {
+        "goalType" : null,
+        "title" : "Navegación",
+        "firstText" : "Para ver alrededor libremente, presiona ctrl y haz clic izquierdo + arrastre.",
+        "showMouse" : [{ "button" : "left", "info" : "Clic izquierdo + arrastrar + ctrl ", "description" : "Ver libremente", "keyboardButton" : "ctrl"}]
+    },
+    {
+        "goalType" : ["uri"],
+        "uri" : "NavigationHandler.OrbitalNavigator.Anchor",
+        "uriValue" : "Luna",
+        "title" : "Navegación",
+        "key": ["Origin", "Moon"], 
+        "firstText" : "También podemos observar objetos celestiales",
+        "goalText" : ["Establece el foco de navegación en la Luna"],
+        "arrowPosition" : { "x" : 320, "y" : 70},
+        "arrowRotation" : "down"
+    },
+    {
+        "goalType" : ["geoPosition"],
+        "position" : { "altitude" : { "operator" : "<" , "value" : 3500, "unit" : "km" }}, 
+        "title" : "Navegación",
+        "firstText" : "Acerquemonos a la Luna.",
+        "goalText" : ["Ir a una altitud máxima de 3500 km"],
+        "showMouse" : [{ "button" : "right", "info" : "Clic derecho + arrastrar", "description" : "Acercarse o alejarse"}], 
+        "arrowPosition" : { "x" : 250, "y" : "calc(100% - 150px)"},
+        "arrowRotation" : "up"
+    },
+    {
+        "goalType" : null,
+        "title" : "Navegación",
+        "firstText" : "¡Genial! Ahora conoces los conceptos básicos de navegación. ¡Comencemos a cambiar el tiempo!"
+    },
+    {
+        "goalType": ["uri", "geoPosition"],
+        "uri": "NavigationHandler.OrbitalNavigator.Anchor",
+        "uriValue": "Sun",
+        "key": ["Origin", "Sun"],
+        "position": {"altitude": { "operator": ">", "value": 1, "unit": "Lighthours" },"latitude": { "operator": "between", "value": [60, 90] }},
+        "title": "Navegación",
+        "firstText": "Observemos el Sistema Solar desde arriba.",
+        "infoText": "El orden de magnitud es: km < AU < Hora Luz. La posición es {latitud, longitud}.",
+        "goalText": ["Establecer el nodo de enfoque en el Sol", "Ir a una altitud de al menos 1 Hora Luz y una latitud de alrededor de 80"],
+        "arrowPosition": { "x": 320, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "goalType": ["changeTime"],
+        "changeValue": "year",
+        "title": "Tiempo",
+        "key": ["Time", "FullYear"],
+        "firstText": "Puedes ver tanto el pasado como el futuro.",
+        "infoText": "Puedes restablecer el tiempo presionando 'Ahora'",
+        "goalText": ["Cambiar el año"],
+        "arrowPosition": { "x": 50, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "goalType": ["changeDeltaTime"],
+        "title": "Tiempo",
+        "key": ["Time", ["SpeedForward", "SpeedBackward"]],
+        "firstText": "También puedes cambiar qué tan rápido se reproduce el tiempo.",
+        "infoText": "Puedes restablecer la velocidad de simulación presionando 'Tiempo Real'.",
+        "goalText": ["Cambia la velocidad de la simulación"],
+        "arrowPosition": { "x": 50, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "goalType": ["pauseTime"],
+        "title": "Tiempo",
+        "key": ["Time", "Pause"],
+        "firstText": "Puedes pausar el tiempo.",
+        "infoText": "Nota: la velocidad de simulación no se establece en 0 al pausar.",
+        "goalText": ["Pausa el tiempo"],
+        "arrowPosition": { "x": 50, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "goalType": null,
+        "title": "Tiempo",
+        "firstText": "¡Fantástico! Ahora puedes moverte tanto en el espacio como en el tiempo. ¡Veamos algo de contenido!"
+    },
+    {
+        "title": "Contenido",
+        "key": ["Scene"],
+        "firstText": "Todo el contenido en OpenSpace se encuentra en el menú Escena.",
+        "infoText": "Puedes buscar objetos en la barra de búsqueda superior y enfocarte en ellos haciendo clic en el ícono de enfoque."
+    },
+    {
+        "goalType": ["uri"],
+        "uri": "Scene.EarthTrail.Renderable.Enabled",
+        "uriValue": false,
+        "title": "Contenido",
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Earth", "PropertyOwner Earth Trail"],
+        "firstText": "Puedes activar o desactivar contenido marcando o desmarcando sus casillas correspondientes.",
+        "goalText": ["Desactiva el rastro de la Tierra"],
+        "arrowPosition": { "x": 50, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "goalType": ["changeUri"],
+        "uri": "Scene.MarsTrail.Renderable.Appearance.Color",
+        "title": "Contenido",
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars Trail", "PropertyOwner Renderable MarsTrail", "PropertyOwner Appearance MarsTrail", "Scene.MarsTrail.Renderable.Appearance.Color"],
+        "firstText": "Todos los objetos tienen propiedades, lo que permite alterar el comportamiento o la apariencia de un objeto.",
+        "goalText": ["Cambia el color del rastro de Marte"],
+        "arrowPosition": { "x": 50, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "goalType": ["uri", "geoPosition"],
+        "uri": "NavigationHandler.OrbitalNavigator.Anchor",
+        "uriValue": "Mars",
+        "position": { "altitude": { "operator": "<", "value": 10000, "unit": "km" }},
+        "title": "Contenido",
+        "firstText": "Echemos un vistazo a la superficie de Marte.",
+        "key": ["Origin", "Mars"],
+        "showMouse": [{ "button": "right", "info": "Clic derecho + arrastrar", "description": "Acercarse o alejarse"}],
+        "goalText": ["Establece el nodo de enfoque en Marte", "Ve a una altitud máxima de 10 000 km"],
+        "arrowPosition": { "x": 320, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "title": "Contenido",
+        "firstText": "Los planetas pueden tener varios mapas que muestran datos diferentes. Los planetas también tienen mapas de altura que muestran la elevación. Los mapas pueden tener diferentes resoluciones.",
+        "infoText": "Todas las capas predeterminadas en OpenSpace generalmente llevan el nombre del satélite o instrumento en un satélite que capturó el mapa. Los nombres [Utah] o [Suecia] indican en qué servidor se encuentra el mapa. Por lo general, es más rápido elegir el servidor más cercano."
+    },
+    {
+        "goalType": ["multiUri"],
+        "uri": ["Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Utah.Enabled", "Scene.Mars.Renderable.Layers.ColorLayers.CTX_Mosaic_Sweden.Enabled"],
+        "uriValue": true,
+        "title": "Contenido",
+        "firstText": "Las capas están ordenadas, y la capa más abajo en el menú se muestra en la parte superior.",
+        "infoText": "Necesitas acceso a internet para mostrar los mapas. Puede que tarden unos segundos en cargarse.",
+        "key": ["Scene", "Group Solar System", "Group Planets", "Group Mars", "PropertyOwner Mars", "PropertyOwner Renderable Mars", "PropertyOwner Layers Mars", "PropertyOwner ColorLayers Mars", ["PropertyOwner CTX Mosaic [Utah] Mars", "PropertyOwner CTX Mosaic [Sweden] Mars"]],
+        "goalText": ["Activa la capa de color 'CTX Mosaic [Utah]' o 'CTX Mosaic [Suecia]"],
+        "arrowPosition": { "x": 50, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "goalType": ["uri"],
+        "uri": "Scene.Constellations.Renderable.Enabled",
+        "uriValue": true,
+        "title": "Contenido",
+        "key": ["Scene", "Group Milky Way", "Group Constellations", "PropertyOwner Constellations"],
+        "firstText": "No todo el contenido está activado por defecto. Explora los menús y ve qué puedes encontrar.",
+        "goalText": ["Activa 'Constelaciones'"],
+        "showMouse": [{ "button": "left", "info": "Clic izquierdo + arrastrar + ctrl", "description": "Mira alrededor libremente", "keyboardButton": "ctrl"}],
+        "arrowPosition": { "x": 50, "y": 70 },
+        "arrowRotation": "down"
+    },
+    {
+        "title": "Contenido",
+        "key": ["SessionRecording"],
+        "firstText": "Si deseas grabar una sesión de OpenSpace, puedes usar la Grabación de Sesión."
+    },
+    {
+        "title": "Contenido",
+        "key": ["GeoLocationPanel"],
+        "firstText": "Si deseas buscar lugares en un globo, puedes usar la Geolocalización."
+    },
+    {
+        "title": "Contenido",
+        "key": ["ScreenSpaceRenderable"],
+        "firstText": "En el panel Renderizable de Espacio de Pantalla puedes agregar imágenes o diapositivas a la escena."
+    },
+    {
+        "title": "Contenido",
+        "key": ["Exoplanets"],
+        "firstText": "Puedes agregar sistemas de exoplanetas a la escena en el panel de Exoplanetas."
+    },
+    {
+        "title": "Contenido",
+        "key": ["Actions"],
+        "firstText": "El panel Acciones ofrece atajos útiles, que pueden ser prácticos para presentaciones."
+    },
+    {
+        "title": "Contenido",
+        "key": ["SkyBrowser"],
+        "firstText": "El panel Explorador del Cielo es un telescopio virtual donde puedes explorar imágenes astronómicas."
+    },
+    {
+        "title": "Contenido",
+        "key": ["System", "Tutorial"],
+        "firstText": "Si deseas volver a visitar el tutorial, puedes encontrarlo en el menú Sistemas."
+    },
+    {
+        "goalType": null,
+        "title": "¡Finalizado!",
+        "firstText": "¡Bien hecho! Ahora estás listo para explorar el Universo por tu cuenta. Algunas ideas:",
+        "bulletList": ["Ve a tu ciudad natal", "Ve al fin del Universo", "Activa la órbita del Sol en la Vía Láctea"]
+    }
+]

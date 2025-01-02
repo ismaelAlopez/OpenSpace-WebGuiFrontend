@@ -11,6 +11,11 @@ const language = (state = initialState, action = {}) => {
         ...state,
         language: action.payload
       };
+    case actionTypes.getLanguage:
+      return {
+        ...state,
+        language: action.payload
+      };
     default:
       return state;
   }

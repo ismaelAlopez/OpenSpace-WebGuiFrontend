@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
+// getTranslation is a function that returns the translation of a given key in a given language
+import { getTranslation } from '../../utils/translation';
 import { SceneKey } from '../../api/keys';
 import {
   getLastWordOfUri,
@@ -41,8 +42,7 @@ function collectUrisRecursively(owners, allPropertyOwners, collectedOwners, coll
 function SettingsPane({ closeCallback }) {
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
   const properties = useSelector((state) => state.propertyTree.properties);
-
-  const [language, setLanguage] = React.useState('en');
+  const language = useSelector((state) => state.language.language);
 
   const allOwnerUris = Object.keys(propertyOwners || []);
   // Remove owners that are in the Scene
@@ -127,17 +127,8 @@ function SettingsPane({ closeCallback }) {
     return null;
   };
 
-  const translation = {
-    en: {
-      settings: 'Settings'
-    },
-    es: {
-      settings: 'Ajustes'
-    }
-  };
-
   return (
-    <Pane title='Settings' closeCallback={closeCallback}>
+    <Pane title={getTranslation(language, 'Settings')} closeCallback={closeCallback}>
       {defaultEntries.length === 0 && <LoadingBlocks className={Pane.styles.loading} />}
 
       {defaultEntries.length > 0 && (

@@ -453,3 +453,8 @@ export const setLanguage = (language) => ({
   type: actionTypes.setLanguage,
   payload: language
 });
+
+export const getLanguage = () => ({
+  type: actionTypes.getLanguage,
+  payload: {}
+});

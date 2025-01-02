@@ -158,7 +158,7 @@ function SystemMenu({ showTutorial }) {
             >
               <MdKeyboard className={styles.linkIcon} />
               {keybindsIsVisible
-                ? getTranslation(language, 'hide')
+                ? getTranslation(language, 'Hide')
                 : getTranslation(language, 'Show')}{' '}
               {getTranslation(language, 'keybindings')}
             </button>
@@ -180,7 +180,7 @@ function SystemMenu({ showTutorial }) {
             <button type='button' onClick={() => onClick(handleLanguageChange, 'es')}>
               {getTranslation(language, 'Spanish')}
             </button>
-            {/* languages here*/}
+            {/* new languages here*/}
             <HorizontalDelimiter />
 
             <button type='button' onClick={() => onClick(openGuiInBrowser)}>

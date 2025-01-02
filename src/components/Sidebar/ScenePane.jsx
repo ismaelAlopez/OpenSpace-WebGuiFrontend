@@ -5,7 +5,8 @@ import { shallowEqualArrays } from 'shallow-equal';
 
 import { useLocalStorageState } from '../../utils/customHooks';
 import {
-  filterPropertyOwners, hasInterestingTag,
+  filterPropertyOwners,
+  hasInterestingTag,
   sortSceneMenuList
 } from '../../utils/propertyTreeHelpers';
 import { ObjectWordBeginningSubstring } from '../../utils/StringMatchers';
@@ -16,7 +17,8 @@ import Checkbox from '../common/Input/Checkbox/Checkbox';
 import LoadingBlocks from '../common/LoadingBlock/LoadingBlocks';
 import SettingsPopup from '../common/SettingsPopup/SettingsPopup';
 import ToggleContent from '../common/ToggleContent/ToggleContent';
-
+// getTranslation is a function that returns the translation of a given key in a given language
+import { getTranslation } from '../../utils/translation';
 import PropertyOwner from './Properties/PropertyOwner';
 import ContextSection from './ContextSection';
 import Group from './Group';
@@ -25,7 +27,7 @@ import Pane from './Pane';
 function ScenePane({ closeCallback }) {
   const [showOnlyEnabled, setShowOnlyEnabled] = useLocalStorageState('showOnlyEnabled', false);
   const [showHiddenNodes, setShowHiddenNodes] = useLocalStorageState('showHiddenNodes', false);
-
+  const language = useSelector((state) => state.language.language);
   const [isFeaturedExpanded, setFeaturedExpanded] = useState(false);
 
   const customGuiGroupOrdering = useSelector((state) => state.groups.customGroupOrdering);
@@ -34,14 +36,15 @@ function ScenePane({ closeCallback }) {
     const topLevelGroupsPaths = Object.keys(state.groups.groups).filter((path) => {
       // Get the number of slashes in the path
       const depth = (path.match(/\//g) || []).length;
-      return (depth === 1) && (path !== '/');
+      return depth === 1 && path !== '/';
     });
     return topLevelGroupsPaths;
   }, shallowEqualArrays);
 
-  const nodesWithoutGroup = useSelector((state) => (
-    state.groups.groups['/']?.propertyOwners || []
-  ), shallowEqualArrays);
+  const nodesWithoutGroup = useSelector(
+    (state) => state.groups.groups['/']?.propertyOwners || [],
+    shallowEqualArrays
+  );
 
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners, shallowEqual);
   const propertyOwnersScene = propertyOwners.Scene?.subowners ?? [];
@@ -66,22 +69,12 @@ function ScenePane({ closeCallback }) {
 
   const filteredPropertyOwnersScene = useSelector((state) => {
     const props = state.propertyTree.properties;
-    return filterPropertyOwners(
-      propertyOwnersScene,
-      props,
-      showOnlyEnabled,
-      showHiddenNodes
-    );
+    return filterPropertyOwners(propertyOwnersScene, props, showOnlyEnabled, showHiddenNodes);
   }, shallowEqualArrays);
 
   const filteredNodesWithoutGroup = useSelector((state) => {
     const props = state.propertyTree.properties;
-    return filterPropertyOwners(
-      nodesWithoutGroup,
-      props,
-      showOnlyEnabled,
-      showHiddenNodes
-    );
+    return filterPropertyOwners(nodesWithoutGroup, props, showOnlyEnabled, showHiddenNodes);
   }, shallowEqualArrays);
 
   function matcher(test, search) {
@@ -122,11 +115,8 @@ function ScenePane({ closeCallback }) {
         style={{ padding: '2px' }}
       >
         <p>
-          Show only visible
-          <InfoBox
-            style={{ paddingLeft: '4px' }}
-            text="Visible = Enabled and not faded out"
-          />
+          {getTranslation(language, 'ShowOnlyVisible')}
+          <InfoBox style={{ paddingLeft: '4px' }} text='Visible = Enabled and not faded out' />
         </p>
       </Checkbox>
       <Checkbox
@@ -138,10 +128,10 @@ function ScenePane({ closeCallback }) {
         style={{ padding: '2px' }}
       >
         <p>
-          Show objects with GUI hidden flag
+          {getTranslation(language, 'ShowHiddenNodes')}
           <InfoBox
             style={{ paddingLeft: '4px' }}
-            text="Show scene graph nodes that are marked as hidden in the GUI part of the asset. These are otherwise hidden in the interface"
+            text='Show scene graph nodes that are marked as hidden in the GUI part of the asset. These are otherwise hidden in the interface'
           />
         </p>
       </Checkbox>
@@ -149,26 +139,36 @@ function ScenePane({ closeCallback }) {
   );
 
   return (
-    <Pane title="Scene" closeCallback={closeCallback} headerButton={settingsButton}>
+    <Pane
+      title={getTranslation(language, 'Scene')}
+      closeCallback={closeCallback}
+      headerButton={settingsButton}
+    >
       {propertyOwnersScene.length > 0 ? (
         <FilterList matcher={matcher}>
           <FilterListFavorites>
-            <ContextSection expansionIdentifier="context" />
+            <ContextSection expansionIdentifier='context' />
             <ToggleContent
               expanded={isFeaturedExpanded}
               setExpanded={setFeaturedExpanded}
-              title="Quick Access"
+              title={getTranslation(language, 'QuickAccess')}
             >
-              {sortedInterestingNodes.map((entry) => <PropertyOwner {...entry} />)}
+              {sortedInterestingNodes.map((entry) => (
+                <PropertyOwner {...entry} />
+              ))}
             </ToggleContent>
             <HorizontalDelimiter />
             {topLevelGroups.map((favorite) => (
               <Group {...favorite} showOnlyEnabled={showOnlyEnabled} showHidden={showHiddenNodes} />
             ))}
-            {topLevelNodes.map((entry) => <PropertyOwner {...entry} />)}
+            {topLevelNodes.map((entry) => (
+              <PropertyOwner {...entry} />
+            ))}
           </FilterListFavorites>
           <FilterListData>
-            {allEntries.map((entry) => <PropertyOwner {...entry} />)}
+            {allEntries.map((entry) => (
+              <PropertyOwner {...entry} />
+            ))}
           </FilterListData>
         </FilterList>
       ) : (

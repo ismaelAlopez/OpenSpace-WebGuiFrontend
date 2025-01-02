@@ -1,24 +1,17 @@
 import React from 'react';
 import { MdChevronLeft, MdChevronRight, MdToday } from 'react-icons/md';
 import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
+import { getMonthTranslation, getDayTranslation, getDays } from '../../../utils/translation';
 import { rotate } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
 
 import styles from './Calendar.scss';
-
-const Days = {
-  Sunday: 0,
-  Monday: 1,
-  Tuesday: 2,
-  Wednesday: 3,
-  Thursday: 4,
-  Friday: 5,
-  Saturday: 6
-};
+const language = useSelector((state) => state.language);
+const Days = getDays(language);
 Object.freeze(Days);
 
-const Months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
+const Months = getMonthTranslation(language);
 Object.freeze(Months);
 
 // how many days of previous month to get depending on weekday
@@ -27,23 +20,25 @@ const DaysInWeekBefore = [7, 1, 2, 3, 4, 5, 6];
 const ExpectedDaysInCalendar = 6 * 7;
 
 const WeekStartsOn = Days.Monday;
-const DayHeaders = 'M T W T F S S'.split(' ');
+const DayHeaders = getDayTranslation(language);
 
-function Calendar({
-  currentTime, onChange, todayButton
-}) {
+function Calendar({ currentTime, onChange, todayButton }) {
   const [viewedMonth, setViewedMonth] = React.useState(currentTime);
   const [viewFreeCoupled, setViewFreeCoupled] = React.useState(false);
 
   let monthNumber = 0;
   try {
     monthNumber = viewedMonth.getMonth();
-  } catch { /* empty */ }
+  } catch {
+    /* empty */
+  }
 
   let fullYear = 0;
   try {
     fullYear = currentTime.getFullYear();
-  } catch { /* empty */ }
+  } catch {
+    /* empty */
+  }
 
   React.useEffect(() => {
     // update calendar focus (unless user has moved away from previously given active month)
@@ -76,7 +71,9 @@ function Calendar({
     let newDate = new Date();
     try {
       newDate = new Date(viewedMonth.getTime());
-    } catch { /* empty */ }
+    } catch {
+      /* empty */
+    }
     return newDate;
   }
 
@@ -149,8 +146,8 @@ function Calendar({
           <MdChevronLeft />
         </Button>
         <span>
-          { todayButton && (
-            <Button onClick={setCurrentMonth} title="Today" small transparent>
+          {todayButton && (
+            <Button onClick={setCurrentMonth} title='Today' small transparent>
               <MdToday />
             </Button>
           )}
@@ -163,22 +160,22 @@ function Calendar({
 
       <section className={styles.calendar}>
         <header className={styles.weekdays}>
-          { dayHeader().map((d) => (
+          {dayHeader().map((d) => (
             <div key={`${d.day} ${d.index}`} className={styles.weekday}>
-              { d.day }
+              {d.day}
             </div>
           ))}
         </header>
 
         <section className={styles.month}>
-          { daysToDisplay().map((day) => (
+          {daysToDisplay().map((day) => (
             <Button
               key={`${day.getMonth()}-${day.getDate()}-${day.getFullYear()}-${viewedMonth}`}
               className={`${styles.day} ${extraClasses(day)}`}
               onClick={(e) => onSelect(e, day)}
               regular
             >
-              { day.getDate() }
+              {day.getDate()}
             </Button>
           ))}
         </section>
@@ -204,9 +201,11 @@ Calendar.daysOfMonth = (month) => {
 
 Calendar.isSameDay = (a, b) => {
   try {
-    return (a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate());
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
   } catch {
     return false;
   }
