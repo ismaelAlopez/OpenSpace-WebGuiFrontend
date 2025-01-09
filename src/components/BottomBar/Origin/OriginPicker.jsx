@@ -38,8 +38,12 @@ import {
 import propertyDispatcher from '../../../api/propertyDispatcher';
 import { useLocalStorageState } from '../../../utils/customHooks';
 import {
-  FilterList, FilterListData, FilterListFavorites, FilterListShowMoreButton
+  FilterList,
+  FilterListData,
+  FilterListFavorites,
+  FilterListShowMoreButton
 } from '../../common/FilterList/FilterList';
+import { getTranslation } from '../../../utils/translation';
 import Button from '../../common/Input/Button/Button';
 import Checkbox from '../../common/Input/Checkbox/Checkbox';
 import LoadingString from '../../common/LoadingString/LoadingString';
@@ -55,6 +59,7 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 
 import styles from './OriginPicker.scss';
+import { get } from 'lodash';
 
 const NavigationActions = {
   Focus: 'Focus',
@@ -63,9 +68,12 @@ const NavigationActions = {
 };
 
 function OriginPicker() {
-  const [closeAfterSelection, setCloseAfterSelection] = useLocalStorageState('closeAfterSelection', false);
+  const [closeAfterSelection, setCloseAfterSelection] = useLocalStorageState(
+    'closeAfterSelection',
+    false
+  );
   const [isPathSettingsExpanded, setPathSettingsExpanded] = React.useState(false);
-
+  const language = useSelector((state) => state.language.language);
   const engineMode = useSelector((state) => state.engineMode.mode || EngineModeUserControl);
   const luaApi = useSelector((state) => state.luaApi);
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
@@ -157,10 +165,12 @@ function OriginPicker() {
   }, [aimDispatcher.current]);
 
   function dispatchPopoverVisibility(visible) {
-    dispatch(setPopoverVisibility({
-      popover: 'originPicker',
-      visible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'originPicker',
+        visible
+      })
+    );
   }
 
   function closePopoverIfSet() {
@@ -170,7 +180,7 @@ function OriginPicker() {
   }
 
   function hasDistinctAim() {
-    return (aim !== '') && (aim !== anchor);
+    return aim !== '' && aim !== anchor;
   }
 
   function togglePopover() {
@@ -238,14 +248,14 @@ function OriginPicker() {
   function focusPicker() {
     return (
       <div className={styles.Grid}>
-        <SvgIcon className={styles.Icon}><Focus /></SvgIcon>
+        <SvgIcon className={styles.Icon}>
+          <Focus />
+        </SvgIcon>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
-            <LoadingString loading={anchor === undefined}>
-              {cappedAnchorName}
-            </LoadingString>
+            <LoadingString loading={anchor === undefined}>{cappedAnchorName}</LoadingString>
           </span>
-          <SmallLabel>Focus</SmallLabel>
+          <SmallLabel>{getTranslation(language, 'SmallFocus')}</SmallLabel>
         </div>
       </div>
     );
@@ -254,23 +264,23 @@ function OriginPicker() {
   function anchorAndAimPicker() {
     return (
       <div className={styles.Grid}>
-        <SvgIcon className={styles.Icon}><Anchor /></SvgIcon>
+        <SvgIcon className={styles.Icon}>
+          <Anchor />
+        </SvgIcon>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
-            <LoadingString loading={anchor === undefined}>
-              {cappedAnchorName}
-            </LoadingString>
+            <LoadingString loading={anchor === undefined}>{cappedAnchorName}</LoadingString>
           </span>
-          <SmallLabel>Anchor</SmallLabel>
+          <SmallLabel>{getTranslation(language, 'SmallAnchor')}</SmallLabel>
         </div>
-        <SvgIcon style={{ marginLeft: 10 }} className={styles.Icon}><Aim /></SvgIcon>
+        <SvgIcon style={{ marginLeft: 10 }} className={styles.Icon}>
+          <Aim />
+        </SvgIcon>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
-            <LoadingString loading={anchor === undefined}>
-              {aimName}
-            </LoadingString>
+            <LoadingString loading={anchor === undefined}>{aimName}</LoadingString>
           </span>
-          <SmallLabel>Aim</SmallLabel>
+          <SmallLabel>{getTranslation(language, 'Aim')}</SmallLabel>
         </div>
       </div>
     );
@@ -289,7 +299,7 @@ function OriginPicker() {
           className={`${styles.Grid}`}
           onClick={cancelFlight}
           onKeyPress={cancelFlight}
-          role="button"
+          role='button'
           tabIndex={0}
         >
           <Button
@@ -300,14 +310,14 @@ function OriginPicker() {
           >
             <Row className={styles.cancelButtonTitle}>
               <MdAirplanemodeInactive className={styles.SmallPickerIcon} />
-              {'  Cancel'}
+              {' ' + getTranslation(language, 'Cancel')}
             </Row>
             <SmallLabel className={styles.cancelButtonLabel}>
               {' ('}
-              <SvgIcon className={styles.SmallPickerIcon}><Anchor /></SvgIcon>
-              <span className={styles.cancelButtonAnchorLabelText}>
-                {cappedAnchorName}
-              </span>
+              <SvgIcon className={styles.SmallPickerIcon}>
+                <Anchor />
+              </SvgIcon>
+              <span className={styles.cancelButtonAnchorLabelText}>{cappedAnchorName}</span>
               {') '}
             </SmallLabel>
           </Button>
@@ -338,15 +348,18 @@ function OriginPicker() {
 
   // OBS same as timepicker
   function pickerStyle() {
-    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) &&
-      (sessionRecordingState === SessionStatePlaying);
+    const isSessionRecordingPlaying =
+      engineMode === EngineModeSessionRecordingPlayback &&
+      sessionRecordingState === SessionStatePlaying;
 
-    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) &&
-      (sessionRecordingState === SessionStatePaused);
+    const isSessionRecordingPaused =
+      engineMode === EngineModeSessionRecordingPlayback &&
+      sessionRecordingState === SessionStatePaused;
 
-    const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
+    const isCameraPathPlaying = engineMode === EngineModeCameraPath;
 
-    if (isSessionRecordingPaused) { // TODO: add camera path paused check
+    if (isSessionRecordingPaused) {
+      // TODO: add camera path paused check
       return Picker.DisabledOrange;
     }
     if (isCameraPathPlaying) {
@@ -369,10 +382,10 @@ function OriginPicker() {
           wide
           style={{ padding: '2px' }}
         >
-          Close window after selecting
+          {getTranslation(language, 'CloseWindow')}
         </Checkbox>
         <ToggleContent
-          title="Camera Path Settings"
+          title={getTranslation(language, 'CamaraPathSettings')}
           expanded={isPathSettingsExpanded}
           setExpanded={setPathSettingsExpanded}
         >
@@ -408,9 +421,9 @@ function OriginPicker() {
     const sortedNodes = searchableNodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
 
     const searchPlaceholder = {
-      Focus: 'Search for a new focus...',
-      Anchor: 'Search for a new anchor...',
-      Aim: 'Search for a new aim...'
+      Focus: getTranslation(language, 'FocusSearch'),
+      Anchor: getTranslation(language, 'AnchorSearch'),
+      Aim: getTranslation(language, 'AimSearch')
     }[navigationAction];
 
     const isInFocusMode = navigationAction === NavigationActions.Focus;
@@ -419,7 +432,7 @@ function OriginPicker() {
     return (
       <Popover
         closeCallback={togglePopover}
-        title="Navigation"
+        title='Navigation'
         className={Picker.Popover}
         detachable
         attached
@@ -429,32 +442,35 @@ function OriginPicker() {
           <Button
             className={styles.NavigationButton}
             onClick={() => dispatchSetNavigationAction(NavigationActions.Focus)}
-            title="Select focus"
+            title='Select focus'
             transparent={navigationAction !== NavigationActions.Focus}
           >
-            <SvgIcon className={styles.TabIcon}><Focus /></SvgIcon>
+            <SvgIcon className={styles.TabIcon}>
+              <Focus />
+            </SvgIcon>
           </Button>
           <Button
             className={styles.NavigationButton}
             onClick={() => dispatchSetNavigationAction(NavigationActions.Anchor)}
-            title="Select anchor"
+            title='Select anchor'
             transparent={navigationAction !== NavigationActions.Anchor}
           >
-            <SvgIcon className={styles.TabIcon}><Anchor /></SvgIcon>
+            <SvgIcon className={styles.TabIcon}>
+              <Anchor />
+            </SvgIcon>
           </Button>
           <Button
             className={styles.NavigationButton}
             onClick={() => dispatchSetNavigationAction(NavigationActions.Aim)}
-            title="Select aim"
+            title='Select aim'
             transparent={navigationAction !== NavigationActions.Aim}
           >
-            <SvgIcon className={styles.TabIcon}><Aim /></SvgIcon>
+            <SvgIcon className={styles.TabIcon}>
+              <Aim />
+            </SvgIcon>
           </Button>
         </div>
-        <FilterList
-          className={styles.list}
-          searchText={searchPlaceholder}
-        >
+        <FilterList className={styles.list} searchText={searchPlaceholder}>
           <FilterListShowMoreButton />
           <FilterListFavorites>
             {sortedDefaultList.map((entry) => (
@@ -483,7 +499,7 @@ function OriginPicker() {
     );
   }
 
-  const enabled = (engineMode === EngineModeUserControl);
+  const enabled = engineMode === EngineModeUserControl;
   const popoverEnabledAndVisible = popoverVisible && enabled;
 
   const pickerClasses = [
@@ -494,7 +510,7 @@ function OriginPicker() {
 
   return (
     <div className={Picker.Wrapper}>
-      <Picker refKey="Origin" onClick={() => togglePopover()} className={pickerClasses}>
+      <Picker refKey='Origin' onClick={() => togglePopover()} className={pickerClasses}>
         {pickerContent()}
       </Picker>
       {popoverEnabledAndVisible && popover()}

@@ -2,18 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '../Input/Button/Button';
-
+import { useSelector } from 'react-redux';
 import styles from './Dropdown.scss';
+import { getTranslation } from '../../../utils/translation';
 
 const DEFAULT_PLACEHOLDER_STRING = 'Select...';
 
-function Dropdown({
-  value, placeholder, options, onFocus, disabled, onChange, ...props
-}) {
-  const [selected, setSelected] = React.useState(value || {
-    label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
-    value: ''
-  });
+function Dropdown({ value, placeholder, options, onFocus, disabled, onChange, ...props }) {
+  const [selected, setSelected] = React.useState(
+    value || {
+      label: typeof placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : placeholder,
+      value: ''
+    }
+  );
   const [isOpen, setIsOpen] = React.useState(false);
   const mounted = React.useRef(true);
   const dropdownRef = React.useRef(null);
@@ -76,6 +77,7 @@ function Dropdown({
   }
 
   function buildMenu() {
+    const language = useSelector((state) => state.language.language);
     const optionDivs = options.map((option) => {
       let newValue = option.value;
       if (typeof newValue === 'undefined') {
@@ -98,9 +100,11 @@ function Dropdown({
       );
     });
 
-    return optionDivs.length > 0 ?
-      optionDivs :
-      <div className={styles.DropdownNoresults}>No options found</div>;
+    return optionDivs.length > 0 ? (
+      optionDivs
+    ) : (
+      <div className={styles.DropdownNoresults}>{getTranslation(language, 'NoOptions')}</div>
+    );
   }
 
   return (
@@ -109,7 +113,7 @@ function Dropdown({
         className={styles.DropdownControl}
         onMouseDown={handleMouseDown}
         onTouchEnd={handleMouseDown}
-        aria-haspopup="listbox"
+        aria-haspopup='listbox'
         wide
         regular
       >
@@ -121,7 +125,7 @@ function Dropdown({
         </div>
       </Button>
       {isOpen && (
-        <div className={styles.DropdownMenu} aria-expanded="true" {...props}>
+        <div className={styles.DropdownMenu} aria-expanded='true' {...props}>
           {buildMenu()}
         </div>
       )}

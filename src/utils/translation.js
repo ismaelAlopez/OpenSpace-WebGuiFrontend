@@ -38,7 +38,103 @@ export const getTranslation = (language, key) => {
       MoreInfo: 'for more in-depth tutorials',
       Here: 'here',
       dontShow: 'Do not show the tutorial again',
-      Click: 'Click'
+      Click: 'Click',
+      // calendar.jsx
+      Today: 'Today',
+      // months
+      Jan: 'Jan',
+      Feb: 'Feb',
+      Mar: 'Mar',
+      Apr: 'Apr',
+      May: 'May',
+      Jun: 'Jun',
+      Jul: 'Jul',
+      Aug: 'Aug',
+      Sep: 'Sep',
+      Oct: 'Oct',
+      Nov: 'Nov',
+      Dec: 'Dec',
+      // week days
+      Sunday: 'Sunday',
+      Monday: 'Monday',
+      Tuesday: 'Tuesday',
+      Wednesday: 'Wednesday',
+      Thursday: 'Thursday',
+      Friday: 'Friday',
+      Saturday: 'Saturday',
+      // days
+      M: 'M',
+      Tu: 'T',
+      W: 'W',
+      Th: 'T',
+      F: 'F',
+      Sa: 'S',
+      Su: 'S',
+      //contextSection.jsx
+      Current: 'Current ',
+      CurrentAim: 'Current Aim:',
+      Anchor: 'Anchor: ',
+      Focus: 'Focus: ',
+      //FilterList.jsx
+      Message: 'Nothing found. Try another search!',
+      Less: 'Less',
+      More: 'More',
+      //DropDown.jsx
+      NoOptions: 'No options found',
+      //NumericInput.jsx
+      NotANum: 'Value is not a number',
+      //MinMaxRangeInput.jsx
+      OutSide: 'Value is outside the valid range:',
+      //ActionPanel.jsx
+      Actions: 'Actions',
+      Loading: 'Loading...',
+      NoActions: 'No Actions',
+      NoFolders: 'No Folders',
+      //TimePicker.jsx
+      SelectDate: 'Select Date',
+      SpeedSim: 'Simulation Speed',
+      Realtime: 'RealTime',
+      Pause: '(Pause)',
+      Now: 'Now',
+      Interpolate: 'Interpolate',
+      Set: 'Set',
+      Cancel: 'Cancel',
+      Second: 'second',
+      Minute: 'minute',
+      Hour: 'hour',
+      Day: 'day',
+      Month: 'month',
+      Year: 'year',
+      //OrginPicker.jsx
+      SmallFocus: 'Focus',
+      SmallAnchor: 'Anchor',
+      Aim: 'Aim',
+      CloseWindow: 'Close window after selecting',
+      CamaraPathSettings: 'Camera Path Settings',
+      FocusSearch: 'Search for a new focus...',
+      AnchorSearch: 'Search for a new anchor...',
+      AimSearch: 'Search for a new aim...',
+      // SessionRec.jsx
+      StopRec: 'Stop Recording',
+      StopPlay: 'Stop playback',
+      SimplePause: 'Pause',
+      Resume: 'Resume',
+      NameOfRec: 'Name of recording',
+      TextFile: 'Text file format',
+      RecSession: 'Record Session',
+      EnterRecFile: 'Enter recording filename...',
+      StartRec: 'Start Recording',
+      Rec: 'Record',
+      PlaySession: 'Play Session',
+      Loop: 'Loop Playback',
+      OutFrames: 'Output frames',
+      TextMessage:
+        'If checked, the specified number of frames will be recorded as screenshots and saved to disk. Per default, they are saved in the user/screenshots folder. This feature can not be used together with "loop playback" ',
+      Framerate: 'Framerate',
+      SelectPlay: 'Select playback file...',
+      StartPlay: 'Start Playback',
+      Play: 'Play',
+      PlayFile: 'Playback file'
     },
     es: {
       //Sidebar.jsx and scenePane.jsx
@@ -78,52 +174,102 @@ export const getTranslation = (language, key) => {
       MoreInfo: 'para tutoriales más detallados',
       Here: 'aquí',
       dontShow: 'No mostrar el tutorial de nuevo',
-      Click: 'Haga clic'
+      Click: 'Haga clic',
+      // calendar.jsx
+      Today: 'Hoy',
+      // months
+      Jan: 'Ene',
+      Feb: 'Feb',
+      Mar: 'Mar',
+      Apr: 'Abr',
+      May: 'May',
+      Jun: 'Jun',
+      Jul: 'Jul',
+      Aug: 'Ago',
+      Sep: 'Sep',
+      Oct: 'Oct',
+      Nov: 'Nov',
+      Dec: 'Dic',
+      // week days
+      Sunday: 'Domingo',
+      Monday: 'Lunes',
+      Tuesday: 'Martes',
+      Wednesday: 'Miércoles',
+      Thursday: 'Jueves',
+      Friday: 'Viernes',
+      Saturday: 'Sábado',
+      // days
+      M: 'L',
+      Tu: 'M',
+      W: 'X',
+      Th: 'J',
+      F: 'V',
+      Sa: 'S',
+      Su: 'D',
+      //contextSection.jsx
+      Current: 'Actual ',
+      CurrentAim: 'Objetivo Actual',
+      Anchor: 'Ancla: ',
+      Focus: 'Enfoque: ',
+      //FilterList.jsx
+      Message: '¡No se encontró nada. Intente otra búsqueda!',
+      Less: 'Menos',
+      More: 'Más',
+      //DropDown.jsx
+      NoOptions: 'No se encontraron opciones',
+      //NumericInput.jsx
+      NotANum: 'El valor no es un numero',
+      //ActionPanel.jsx
+      Actions: 'Acciones',
+      Loading: 'Cargando...',
+      NoActions: 'No hay acciones',
+      NoFolders: 'No hay carpetas',
+      //TimePicker.jsx
+      SelectDate: 'Seleccionar fecha',
+      SpeedSim: 'Velocidad de simulación',
+      Realtime: 'Tiempo real',
+      Pause: '(Pausa)',
+      Now: 'Ahora',
+      Interpolate: 'Interpolar',
+      Set: 'Establecer',
+      Cancel: 'Cancelar',
+      Second: 'Segundo',
+      Minute: 'Minuto',
+      Hour: 'Hora',
+      Day: 'Día',
+      Month: 'Mes',
+      Year: 'Año',
+      //OrginPicker.jsx
+      SmallFocus: 'Enfoque',
+      SmallAnchor: 'Ancla',
+      Aim: 'Objetivo',
+      CloseWindow: 'Cerrar ventana después de seleccionar',
+      CamaraPathSettings: 'Configuración de la ruta de la cámara',
+      FocusSearch: 'Buscar un nuevo enfoque...',
+      AnchorSearch: 'Buscar un nuevo ancla...',
+      AimSearch: 'Buscar un nuevo objetivo...',
+      // SessionRec.jsx
+      StopRec: 'Detener grabación',
+      StopPlay: 'Detener reproducción',
+      SimplePause: 'Pausa',
+      Resume: 'Reanudar',
+      NameOfRec: 'Nombre de la grabación',
+      TextFile: 'Formato de archivo de texto',
+      RecSession: 'Sección de Grabación',
+      EnterRecFile: 'Nombre del archivo de grabación...',
+      StartRec: 'Iniciar grabación',
+      Rec: 'Grabar',
+      PlaySession: 'Reproducir sesión',
+      Loop: 'Repetición en Bucle',
+      OutFrames: 'Fotogramas de salidas',
+      TextMessage:
+        'Si está seleccionado, se grabará el número especificado de fotogramas como capturas de pantalla y se guardarán en el disco. Por defecto, se guardan en la carpeta de usuario/capturas de pantalla. Esta función no se puede usar junto con la opción de "reproducción en bucle".',
+      Framerate: 'Fotograma',
+      SelectPlay: 'Seleccionar archivo de reproducción...',
+      StartPlay: 'Iniciar reproducción',
+      Play: 'Iniciar',
+      PlayFile: 'Archivo de reproducción'
     }
   };
   return translation[language][key];
-};
-export const getMonthTranslation = (language) => {
-  let Months;
-  if (language === 'en') {
-    Months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec';
-  } else {
-    Months = 'ene feb mar abr may jun jul ago sep oct nov dic';
-  }
-  return Months.split(' ');
-};
-export const getDayTranslation = (language) => {
-  let DayHeaders;
-  if (language === 'en') {
-    DayHeaders = 'M T W T F S S';
-  } else {
-    DayHeaders = 'L M X J V S D';
-  }
-  return DayHeaders.split(' ');
-};
-
-export const getDays = (language) => {
-  let Days;
-  if (language === 'en') {
-    Days = {
-      Sunday: 0,
-      Monday: 1,
-      Tuesday: 2,
-      Wednesday: 3,
-      Thursday: 4,
-      Friday: 5,
-      Saturday: 6
-    };
-  } else {
-    Days = {
-      Domingo: 0,
-      Lunes: 1,
-      Martes: 2,
-      Miércoles: 3,
-      Jueves: 4,
-      Viernes: 5,
-      Sábado: 6
-    };
-  }
-  return Days;
 };

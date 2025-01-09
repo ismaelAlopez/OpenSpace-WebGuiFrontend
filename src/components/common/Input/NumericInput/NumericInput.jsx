@@ -1,19 +1,36 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { clamp } from 'lodash/number';
 import PropTypes from 'prop-types';
 
 import { roundValueToStepSize } from '../../../../utils/rounding';
 import Tooltip from '../../Tooltip/Tooltip';
 import Input from '../Input/Input';
-
+import { getTranslation } from '../../../../utils/translation';
 import styles from './NumericInput.scss';
 
 const Scale = require('d3-scale');
 
 function NumericInput({
-  placeholder, className, inputOnly, noHoverHint, noTooltip, label, reverse, noValue,
-  decimals, min, max, showOutsideRangeHint, wide, value, step, exponent, disabled,
-  onValueChanged, ...props
+  placeholder,
+  className,
+  inputOnly,
+  noHoverHint,
+  noTooltip,
+  label,
+  reverse,
+  noValue,
+  decimals,
+  min,
+  max,
+  showOutsideRangeHint,
+  wide,
+  value,
+  step,
+  exponent,
+  disabled,
+  onValueChanged,
+  ...props
 }) {
   const [storedValue, setStoredValue] = React.useState(value);
   const [showTextInput, setShowTextInput] = React.useState(false);
@@ -33,7 +50,7 @@ function NumericInput({
   // The useMemo hook is called before first render. This will initialize the refs
   React.useMemo(() => {
     // Prevent setting exponent to zero, as it breaks the scale
-    const exp = (exponent === 0) ? 1.0 : exponent;
+    const exp = exponent === 0 ? 1.0 : exponent;
 
     // If linear scale, we want the resolution to match the step size
     if (exp === 1.0) {
@@ -151,6 +168,7 @@ function NumericInput({
   }
 
   function textInput() {
+    const language = useSelector((state) => state.language.laguange);
     // If we are already outside the range, exclude the min max properties to the HTML
     // input. But while inside the range we want them to affect what value is possible
     // to set using e.g. the arrow keys
@@ -167,7 +185,7 @@ function NumericInput({
       <div className={`${styles.inputGroup} ${wide ? styles.wide : ''}`} ref={wrapperRef}>
         <Input
           className={`${className} ${tooltipStyles}`}
-          type="number"
+          type='number'
           value={storedValue}
           onBlur={onTextBlurOrEnter}
           onChange={onTextInputChange}
@@ -181,16 +199,19 @@ function NumericInput({
           autoFocus
         />
         {showOutsideRangeHint && valueIsBad && (
-          <Tooltip className={tooltipStyles} fixed style={{ ...textTooltipPosition() }} placement="right">
+          <Tooltip
+            className={tooltipStyles}
+            fixed
+            style={{ ...textTooltipPosition() }}
+            placement='right'
+          >
             {isValueOutsideRange && (
               <p>
                 {`Value is outside the valid range: `}
                 <b>{`[${min}, ${max}].`}</b>
               </p>
             )}
-            {enteredInvalidValue && (
-              <p>Value is not a number</p>
-            )}
+            {enteredInvalidValue && <p>{getTranslation(language, 'NotANum')}</p>}
           </Tooltip>
         )}
       </div>
@@ -206,18 +227,21 @@ function NumericInput({
     const tooltipValue = valueFromSliderPos(scaledHoverHintOffset);
     const displayValue = decimals ? storedValue.toFixed(decimals) : storedValue;
 
-    const sliderStyle = (inputOnly) ? {} :
-      {
-        '--min': 0,
-        '--max': sliderResolution.current,
-        '--value': sliderValue,
-        direction: reverse ? 'rtl' : 'ltr'
-      };
+    const sliderStyle = inputOnly
+      ? {}
+      : {
+          '--min': 0,
+          '--max': sliderResolution.current,
+          '--value': sliderValue,
+          direction: reverse ? 'rtl' : 'ltr'
+        };
 
     return (
       // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <div
-        className={`${styles.inputGroup} ${wide ? styles.wide : ''} ${reverse ? styles.reverse : ''}`}
+        className={`${styles.inputGroup} ${wide ? styles.wide : ''} ${
+          reverse ? styles.reverse : ''
+        }`}
         ref={wrapperRef}
         onDoubleClick={enableTextInput}
         onClick={(event) => {
@@ -228,12 +252,12 @@ function NumericInput({
         }}
         onContextMenu={enableTextInput}
       >
-        { !noHoverHint && hoverHint !== null && !inputOnly && (
+        {!noHoverHint && hoverHint !== null && !inputOnly && (
           <div className={styles.hoverHint} style={{ width: `${100 * hoverHintOffset}%` }} />
         )}
-        { !noTooltip && hoverHint !== null && (
-          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement="top">
-            { tooltipValue }
+        {!noTooltip && hoverHint !== null && (
+          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement='top'>
+            {tooltipValue}
           </Tooltip>
         )}
         <input
@@ -241,8 +265,8 @@ function NumericInput({
           placeholder={placeholder}
           disabled={disabled}
           id={id.current}
-          type="range"
-          value="test"
+          type='range'
+          value='test'
           min={0}
           max={sliderResolution.current}
           step={1}
@@ -258,11 +282,9 @@ function NumericInput({
           onMouseLeave={onLeave}
         />
         <label htmlFor={id.current} className={`${styles.rangeLabel}`}>
-          { label || placeholder }
+          {label || placeholder}
         </label>
-        <span className={styles.value}>
-          {noValue ? '' : displayValue}
-        </span>
+        <span className={styles.value}>{noValue ? '' : displayValue}</span>
       </div>
     );
   }

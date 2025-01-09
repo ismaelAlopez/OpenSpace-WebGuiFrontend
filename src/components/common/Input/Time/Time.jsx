@@ -1,11 +1,11 @@
 import React from 'react';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
 import { useContextRefs } from '../../../GettingStartedTour/GettingStartedContext';
 import Button from '../Button/Button';
 import InlineInput from '../InlineInput/InlineInput';
-
+import { getTranslation } from '../../../../utils/translation';
 import styles from './Time.scss';
 
 const Elements = {
@@ -23,7 +23,14 @@ Elements.FullDate = [Elements.FullYear, Elements.Month, Elements.Date];
 Elements.DateAndTime = Elements.FullDate.concat(null).concat(Elements.Time);
 Object.freeze(Elements);
 
-const Months = 'January February March April May June July August September October November December'.split(' ');
+const Months =
+  'January February March April May June July August September October November December'.split(
+    ' '
+  );
+// const Months =
+//   'Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre'.split(
+//     ''
+//   );
 
 function findIndexForMonth(input) {
   const isNumber = !Number.isNaN(Number(input));
@@ -107,15 +114,20 @@ function Time({ elements, onChange, time }) {
   function wrap(inner, what, after = '') {
     // make it editable with input and such?
     if (hasCallback) {
-      const width = (what === 'Milliseconds' || what === 'Month') ? 3 : 2;
-      const type = (what === 'Month') ? 'text' : 'number';
+      const width = what === 'Milliseconds' || what === 'Month' ? 3 : 2;
+      const type = what === 'Month' ? 'text' : 'number';
       const ref = useContextRefs();
       return (
         <div key={what} className={styles.element}>
           <Button nopadding transparent onClick={(e) => onClick(e, what, 1)}>
             <MdExpandLess />
           </Button>
-          <span key={`span${what}`} ref={(el) => { ref.current[what] = el; }}>
+          <span
+            key={`span${what}`}
+            ref={(el) => {
+              ref.current[what] = el;
+            }}
+          >
             <InlineInput
               value={inner}
               className={styles.textInput}
@@ -132,8 +144,8 @@ function Time({ elements, onChange, time }) {
 
     return (
       <div className={styles.element}>
-        { inner }
-        { after }
+        {inner}
+        {after}
       </div>
     );
   }
@@ -148,6 +160,7 @@ function Time({ elements, onChange, time }) {
   }
 
   function month() {
+    const language = useSelector((state) => state.language.language);
     const dd = shouldInclude(Elements.Date);
     let mm = '';
     try {
@@ -159,7 +172,8 @@ function Time({ elements, onChange, time }) {
       mm = Months[0];
     }
     mm = mm.substring(0, 3);
-
+    // get the translation of the month using the 3 first letters as key
+    mm = getTranslation(language, mm);
     return wrap(mm, 'Month', dd && ':');
   }
 
@@ -238,15 +252,13 @@ function Time({ elements, onChange, time }) {
 
   return (
     <div className={styles.clock}>
-      {
-        elements.map((getterName) => {
-          const value = functionMapping?.[getterName]?.();
-          if (!value) {
-            return <div key={getterName} className={styles.padding} />;
-          }
-          return value;
-        })
-      }
+      {elements.map((getterName) => {
+        const value = functionMapping?.[getterName]?.();
+        if (!value) {
+          return <div key={getterName} className={styles.padding} />;
+        }
+        return value;
+      })}
     </div>
   );
 }

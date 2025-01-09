@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { NavigationAimKey, NavigationAnchorKey, ScenePrefixKey } from '../../api/keys';
-
+import { getTranslation } from '../../utils/translation';
 import PropertyOwner from './Properties/PropertyOwner';
 
 function ContextSection({ expansionIdentifier }) {
+  const language = useSelector((state) => state.language.language);
   const aim = useSelector((state) => {
     const aimProp = state.propertyTree.properties[NavigationAimKey];
     return aimProp && aimProp.value !== '' && ScenePrefixKey + aimProp.value;
@@ -35,20 +36,22 @@ function ContextSection({ expansionIdentifier }) {
     return '';
   });
 
-  const focusOrAnchor = aim ? 'Anchor' : 'Focus';
+  const focusOrAnchor = aim
+    ? getTranslation(language, 'Anchor')
+    : getTranslation(language, 'Focus');
   return (
     <>
       {anchor && (
         <PropertyOwner
           expansionIdentifier={`${expansionIdentifier}/anchor`}
-          name={`Current ${focusOrAnchor}: ${anchorName}`}
+          name={`${getTranslation(language, 'Current')} ${focusOrAnchor}: ${anchorName}`}
           uri={anchor}
         />
       )}
       {aim && (
         <PropertyOwner
           expansionIdentifier={`${expansionIdentifier}/aim`}
-          name={`Current Aim: ${aimName}`}
+          name={`${getTranslation(language, 'CurrentAim')} ${aimName}`}
           uri={aim}
         />
       )}

@@ -2,16 +2,24 @@ import React from 'react';
 import { MdChevronLeft, MdChevronRight, MdToday } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getMonthTranslation, getDayTranslation, getDays } from '../../../utils/translation';
+
+import { getTranslation } from '../../../utils/translation';
 import { rotate } from '../../../utils/helpers';
 import Button from '../Input/Button/Button';
 
 import styles from './Calendar.scss';
-const language = useSelector((state) => state.language);
-const Days = getDays(language);
+const Days = {
+  Sunday: 0,
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6
+};
 Object.freeze(Days);
 
-const Months = getMonthTranslation(language);
+const Months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
 Object.freeze(Months);
 
 // how many days of previous month to get depending on weekday
@@ -20,9 +28,10 @@ const DaysInWeekBefore = [7, 1, 2, 3, 4, 5, 6];
 const ExpectedDaysInCalendar = 6 * 7;
 
 const WeekStartsOn = Days.Monday;
-const DayHeaders = getDayTranslation(language);
+const DayHeaders = 'M Tu W Th F Sa Su'.split(' ');
 
 function Calendar({ currentTime, onChange, todayButton }) {
+  const language = useSelector((state) => state.language.language);
   const [viewedMonth, setViewedMonth] = React.useState(currentTime);
   const [viewFreeCoupled, setViewFreeCoupled] = React.useState(false);
 
@@ -147,11 +156,16 @@ function Calendar({ currentTime, onChange, todayButton }) {
         </Button>
         <span>
           {todayButton && (
-            <Button onClick={setCurrentMonth} title='Today' small transparent>
+            <Button
+              onClick={setCurrentMonth}
+              title={getTranslation(language, 'Today')}
+              small
+              transparent
+            >
               <MdToday />
             </Button>
           )}
-          {`${Months[monthNumber]} ${fullYear}`}
+          {`${getTranslation(language, Months[monthNumber])} ${fullYear}`}
         </span>
         <Button regular transparent small onClick={() => stepViewMonth(1)}>
           <MdChevronRight />
@@ -162,7 +176,7 @@ function Calendar({ currentTime, onChange, todayButton }) {
         <header className={styles.weekdays}>
           {dayHeader().map((d) => (
             <div key={`${d.day} ${d.index}`} className={styles.weekday}>
-              {d.day}
+              {getTranslation(language, d.day)}
             </div>
           ))}
         </header>

@@ -3,9 +3,13 @@ import { MdLock, MdLockOpen, MdViewDay } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  setPopoverVisibility, subscribeToEngineMode, subscribeToSessionRecording,
-  subscribeToTime, unsubscribeToEngineMode,
-  unsubscribeToSessionRecording, unsubscribeToTime
+  setPopoverVisibility,
+  subscribeToEngineMode,
+  subscribeToSessionRecording,
+  subscribeToTime,
+  unsubscribeToEngineMode,
+  unsubscribeToSessionRecording,
+  unsubscribeToTime
 } from '../../api/Actions';
 import {
   EngineModeCameraPath,
@@ -22,13 +26,14 @@ import LoadingString from '../common/LoadingString/LoadingString';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
-
+import { getTranslation } from '../../utils/translation';
 import Picker from './Picker';
 import SimulationIncrement from './SimulationIncrement';
 
 import styles from './TimePicker.scss';
 
 function TimePicker() {
+  const language = useSelector((state) => state.language.language);
   const [pendingTime, setPendingTime] = React.useState(new Date());
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [useLock, setUseLock] = React.useState(false);
@@ -108,10 +113,12 @@ function TimePicker() {
   }
 
   function togglePopover() {
-    dispatch(setPopoverVisibility({
-      popover: 'timePicker',
-      visible: !popoverVisible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'timePicker',
+        visible: !popoverVisible
+      })
+    );
   }
 
   function toggleLock() {
@@ -144,15 +151,16 @@ function TimePicker() {
     setPendingTime(new Date(time));
     setUseLock(false);
   }
-
+  // unit will be use as the key for the translation
   function speedLabel() {
     let increment = Math.abs(targetDeltaTime);
     const isNegative = Math.sign(targetDeltaTime) === -1;
     const sign = isNegative ? '-' : '';
-    let unit = 'second';
+    let unit = 'Second';
 
     if (increment === 1 && !isNegative) {
-      return `Realtime${isPaused ? ' (Paused)' : ''}`;
+      const time = getTranslation(language, 'Realtime');
+      return `${time}${isPaused ? getTranslation(language, 'Pause') : ''}`;
     }
 
     (() => {
@@ -160,37 +168,40 @@ function TimePicker() {
         return;
       }
       increment /= 60;
-      unit = 'minute';
+      unit = 'Minute';
 
       if (increment < 60 * 2) {
         return;
       }
       increment /= 60;
-      unit = 'hour';
+      unit = 'Hour';
 
       if (increment < 24 * 2) {
         return;
       }
       increment /= 24;
-      unit = 'day';
+      unit = 'Day';
 
       if ((increment < 365) / (12 * 2)) {
         return;
       }
       increment /= 265 / 12;
-      unit = 'month';
+      unit = 'Month';
 
       if (increment < 12) {
         return;
       }
       increment /= 12;
-      unit = 'year';
+      unit = 'Year';
     })();
 
     increment = Math.round(increment);
-    const pluralSuffix = (increment !== 1) ? 's' : '';
-
-    return `${sign + increment} ${unit}${pluralSuffix} / second${isPaused ? ' (Paused)' : ''}`;
+    const pluralSuffix = increment !== 1 ? 's' : '';
+    // translates the unit to the correct language
+    return `${sign + increment} ${getTranslation(language, unit)}${pluralSuffix} / ${getTranslation(
+      language,
+      'Second'
+    )}${isPaused ? getTranslation(language, 'Pause') : ''}`;
   }
 
   function changeDate(event) {
@@ -210,22 +221,32 @@ function TimePicker() {
   }
 
   function calendar() {
-    return showCalendar && (
-      <div>
-        <HorizontalDelimiter />
-        <Calendar currentTime={time} onChange={changeDate} todayButton />
-        <HorizontalDelimiter />
-      </div>
+    return (
+      showCalendar && (
+        <div>
+          <HorizontalDelimiter />
+          <Calendar currentTime={time} onChange={changeDate} todayButton />
+          <HorizontalDelimiter />
+        </div>
+      )
     );
   }
 
   function lockOptions() {
-    return useLock && (
-      <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
-        <Button onClick={interpolateToPendingTime} block smalltext>Interpolate</Button>
-        <Button onClick={setToPendingTime} block smalltext>Set</Button>
-        <Button onClick={resetPendingTime} block smalltext>Cancel</Button>
-      </div>
+    return (
+      useLock && (
+        <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
+          <Button onClick={interpolateToPendingTime} block smalltext>
+            {getTranslation(language, 'Interpolate')}
+          </Button>
+          <Button onClick={setToPendingTime} block smalltext>
+            {getTranslation(language, 'Set')}
+          </Button>
+          <Button onClick={resetPendingTime} block smalltext>
+            {getTranslation(language, 'Cancel')}
+          </Button>
+        </div>
+      )
     );
   }
 
@@ -234,20 +255,25 @@ function TimePicker() {
     return (
       <Popover
         className={`${styles.timePopover} ${Picker.Popover}`}
-        title="Select date"
+        title={getTranslation(language, 'SelectDate')}
         closeCallback={() => togglePopover()}
         detachable
         attached
       >
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <div style={{ marginTop: 20 }}>
-            <Button onClick={toggleLock} title="Toggle lock" small transparent={!useLock}>
-              { useLock ? <MdLock /> : <MdLockOpen /> }
+            <Button onClick={toggleLock} title='Toggle lock' small transparent={!useLock}>
+              {useLock ? <MdLock /> : <MdLockOpen />}
             </Button>
           </div>
           {displayedTime && <Time time={displayedTime} onChange={changeDate} />}
           <div style={{ marginTop: 20 }}>
-            <Button onClick={toggleCalendar} title="Toggle calendar" small transparent={!showCalendar}>
+            <Button
+              onClick={toggleCalendar}
+              title='Toggle calendar'
+              small
+              transparent={!showCalendar}
+            >
               <MdViewDay />
             </Button>
           </div>
@@ -256,7 +282,7 @@ function TimePicker() {
         {calendar()}
         {lockOptions()}
 
-        <div className={Popover.styles.title}>Simulation speed</div>
+        <div className={Popover.styles.title}>{getTranslation(language, 'SpeedSim')}</div>
         <div className={Popover.styles.content}>
           <SimulationIncrement />
         </div>
@@ -264,10 +290,10 @@ function TimePicker() {
 
         <div className={`${Popover.styles.row} ${Popover.styles.content}`}>
           <Button block smalltext onClick={realtime}>
-            Realtime
+            {getTranslation(language, 'Realtime')}
           </Button>
           <Button block smalltext onClick={now}>
-            Now
+            {getTranslation(language, 'Now')}
           </Button>
         </div>
       </Popover>
@@ -276,15 +302,18 @@ function TimePicker() {
 
   // OBS! same as origin picker
   function pickerStyle() {
-    const isSessionRecordingPlaying = (engineMode === EngineModeSessionRecordingPlayback) &&
-      (sessionRecordingState === SessionStatePlaying);
+    const isSessionRecordingPlaying =
+      engineMode === EngineModeSessionRecordingPlayback &&
+      sessionRecordingState === SessionStatePlaying;
 
-    const isSessionRecordingPaused = (engineMode === EngineModeSessionRecordingPlayback) &&
-      (sessionRecordingState === SessionStatePaused);
+    const isSessionRecordingPaused =
+      engineMode === EngineModeSessionRecordingPlayback &&
+      sessionRecordingState === SessionStatePaused;
 
-    const isCameraPathPlaying = (engineMode === EngineModeCameraPath);
+    const isCameraPathPlaying = engineMode === EngineModeCameraPath;
 
-    if (isSessionRecordingPaused) { // TODO: add camera path paused check
+    if (isSessionRecordingPaused) {
+      // TODO: add camera path paused check
       return Picker.DisabledOrange;
     }
     if (isCameraPathPlaying || isSessionRecordingPlaying) {
@@ -293,7 +322,7 @@ function TimePicker() {
     return '';
   }
 
-  const enabled = (engineMode === EngineModeUserControl);
+  const enabled = engineMode === EngineModeUserControl;
   const popoverEnabledAndVisible = popoverVisible && enabled;
   const disableClass = enabled ? '' : pickerStyle();
 
@@ -304,29 +333,28 @@ function TimePicker() {
   ].join(' ');
 
   return (
-    <div ref={(el) => { refs.current.Time = el; }} className={Picker.Wrapper}>
+    <div
+      ref={(el) => {
+        refs.current.Time = el;
+      }}
+      className={Picker.Wrapper}
+    >
       <Picker onClick={enabled ? () => togglePopover() : undefined} className={pickerClasses}>
         <div className={Picker.Title}>
           <span className={Picker.Name}>
-            <LoadingString loading={time === undefined}>
-              { timeLabel() }
-            </LoadingString>
+            <LoadingString loading={time === undefined}>{timeLabel()}</LoadingString>
           </span>
-          <SmallLabel>{ targetDeltaTime === undefined ? '' : speedLabel()}</SmallLabel>
+          <SmallLabel>{targetDeltaTime === undefined ? '' : speedLabel()}</SmallLabel>
         </div>
       </Picker>
 
-      { popoverEnabledAndVisible && popover() }
+      {popoverEnabledAndVisible && popover()}
     </div>
   );
 }
 
-TimePicker.propTypes = {
+TimePicker.propTypes = {};
 
-};
-
-TimePicker.defaultProps = {
-
-};
+TimePicker.defaultProps = {};
 
 export default TimePicker;

@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  MdFiberManualRecord, MdPause, MdPlayArrow, MdStop, MdVideocam
-} from 'react-icons/md';
+import { MdFiberManualRecord, MdPause, MdPlayArrow, MdStop, MdVideocam } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -19,6 +17,7 @@ import {
   SessionStatePlaying,
   SessionStateRecording
 } from '../../api/keys';
+import { getTranslation } from '../../utils/translation';
 import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
@@ -33,6 +32,7 @@ import Picker from './Picker';
 import styles from './SessionRec.scss';
 
 function SessionRec() {
+  const language = useSelector((state) => state.language.language);
   const [useTextFormat, setUseTextFormat] = React.useState(false);
   const [filenameRecording, setFilenameRecording] = React.useState('');
   const [filenamePlayback, setFilenamePlayback] = React.useState(undefined);
@@ -44,9 +44,9 @@ function SessionRec() {
   const luaApi = useSelector((state) => state.luaApi);
 
   const fileList = useSelector((state) => state.sessionRecording.files || []);
-  const recordingState = useSelector((state) => (
-    state.sessionRecording.recordingState || SessionStateIdle
-  ));
+  const recordingState = useSelector(
+    (state) => state.sessionRecording.recordingState || SessionStateIdle
+  );
   const engineMode = useSelector((state) => state.engineMode.mode || EngineModeUserControl);
 
   const dispatch = useDispatch();
@@ -66,7 +66,7 @@ function SessionRec() {
   }, []);
 
   function isIdle() {
-    return (recordingState === SessionStateIdle);
+    return recordingState === SessionStateIdle;
   }
 
   function onLoopPlaybackChange(newLoopPlayback) {
@@ -100,30 +100,32 @@ function SessionRec() {
   }
 
   function startRecording() {
-      luaApi.sessionRecording.startRecording();
+    luaApi.sessionRecording.startRecording();
   }
 
   function toggleRecording() {
     if (isIdle()) {
       startRecording();
     } else {
-      const format = useTextFormat ? "Ascii" : "Binary";
-      luaApi.absPath("${RECORDINGS}/" + filenameRecording).then(
-        (value) => luaApi.sessionRecording.stopRecording(value[1], format)
-      );
+      const format = useTextFormat ? 'Ascii' : 'Binary';
+      luaApi
+        .absPath('${RECORDINGS}/' + filenameRecording)
+        .then((value) => luaApi.sessionRecording.stopRecording(value[1], format));
     }
   }
 
   function startPlayback() {
     const ShouldWaitForTiles = true;
-    luaApi.absPath("${RECORDINGS}/" + filenamePlayback).then(function(value) {
+    luaApi.absPath('${RECORDINGS}/' + filenamePlayback).then(function (value) {
       if (shouldOutputFrames) {
-        const framerate = parseInt(outputFramerate, 10)
+        const framerate = parseInt(outputFramerate, 10);
         luaApi.sessionRecording.startPlayback(
-          value[1], loopPlayback, ShouldWaitForTiles, framerate
+          value[1],
+          loopPlayback,
+          ShouldWaitForTiles,
+          framerate
         );
-      }
-      else {
+      } else {
         luaApi.sessionRecording.startPlayback(value[1], loopPlayback, ShouldWaitForTiles);
       }
     });
@@ -162,50 +164,40 @@ function SessionRec() {
       case SessionStateRecording:
         return (
           <div>
-            <MdVideocam alt="videocam" />
-            {' Stop recording'}
+            <MdVideocam alt='videocam' />
+            {getTranslation(language, 'StopRec')}
           </div>
         );
       case SessionStatePlaying:
         return (
           <>
-            <Button
-              className={styles.playbackButton}
-              onClick={togglePlaybackPaused}
-            >
-              <MdPause alt="pause" />
-              {' Pause'}
+            <Button className={styles.playbackButton} onClick={togglePlaybackPaused}>
+              <MdPause alt='pause' />
+              {getTranslation(language, 'SimplePause')}
             </Button>
             <Button onClick={stopPlayback}>
-              <MdStop alt="stop" />
-              {' Stop playback'}
+              <MdStop alt='stop' />
+              {getTranslation(language, 'StopPlay')}
             </Button>
           </>
         );
       case SessionStatePaused:
         return (
           <>
-            <Button
-              className={styles.playbackButton}
-              onClick={togglePlaybackPaused}
-              regular
-            >
-              <MdPlayArrow alt="resume" />
-              {' Resume'}
+            <Button className={styles.playbackButton} onClick={togglePlaybackPaused} regular>
+              <MdPlayArrow alt='resume' />
+              {getTranslation(language, 'Resume')}
             </Button>
-            <Button
-              onClick={stopPlayback}
-              regular
-            >
-              <MdStop alt="stop" />
-              {' Stop playback'}
+            <Button onClick={stopPlayback} regular>
+              <MdStop alt='stop' />
+              {getTranslation(language, 'StopPlay')}
             </Button>
           </>
         );
       default:
         return (
           <div>
-            <MdVideocam className={Picker.Icon} alt="videocam" />
+            <MdVideocam className={Picker.Icon} alt='videocam' />
           </div>
         );
     }
@@ -234,91 +226,77 @@ function SessionRec() {
     }
 
     return (
-      <Picker
-        onClick={onClick}
-        className={classes.join(' ')}
-        refKey="SessionRecording"
-      >
-        { pickerContent() }
+      <Picker onClick={onClick} className={classes.join(' ')} refKey='SessionRecording'>
+        {pickerContent()}
       </Picker>
     );
   }
 
   function popover() {
-    const options = Object.values(fileList)
-      .map((fname) => ({ value: fname, label: fname }));
+    const options = Object.values(fileList).map((fname) => ({ value: fname, label: fname }));
 
-    const fileNameLabel = <span>Name of recording</span>;
+    const fileNameLabel = <span>{getTranslation(language, 'NameOfRec')}</span>;
     const fpsLabel = <span>FPS</span>;
-    const textFormatLabel = <span>Text file format</span>;
+    const textFormatLabel = <span>{getTranslation(language, 'TextFile')}</span>;
 
     return (
       <Popover
         className={Picker.Popover}
         closeCallback={togglePopover}
-        title="Record session"
+        title={getTranslation(language, 'RecSession')}
         attached
         detachable
       >
         <div className={Popover.styles.content}>
-          <Checkbox
-            checked={useTextFormat}
-            setChecked={setUseTextFormat}
-          >
+          <Checkbox checked={useTextFormat} setChecked={setUseTextFormat}>
             <p>{textFormatLabel}</p>
           </Checkbox>
           <Row>
             <Input
               value={filenameRecording}
               label={fileNameLabel}
-              placeholder="Enter recording filename..."
+              placeholder={getTranslation(language, 'EnterRecFile')}
               onChange={(evt) => updateRecordingFilename(evt)}
             />
 
             <div className={Popover.styles.row}>
               <Button
                 onClick={toggleRecording}
-                title="Start Recording"
+                title={getTranslation(language, 'StartRec')}
                 style={{ width: 90 }}
                 disabled={!filenameRecording}
               >
-                <MdFiberManualRecord alt="record" />
-                <span style={{ marginLeft: 5 }}>Record</span>
+                <MdFiberManualRecord alt='record' />
+                <span style={{ marginLeft: 5 }}>{getTranslation(language, 'Rec')}</span>
               </Button>
             </div>
           </Row>
         </div>
         <HorizontalDelimiter />
-        <div className={Popover.styles.title}>Play session</div>
+        <div className={Popover.styles.title}>{getTranslation(language, 'PlaySession')}</div>
         <div className={Popover.styles.content}>
           <Checkbox
             checked={loopPlayback}
-            name="loopPlaybackInput"
+            name='loopPlaybackInput'
             setChecked={onLoopPlaybackChange}
           >
-            <p>Loop playback</p>
+            <p>{getTranslation(language, 'Loop')}</p>
           </Checkbox>
           <Row className={styles.lastRow}>
             <Checkbox
               checked={shouldOutputFrames}
-              name="outputFramesInput"
+              name='outputFramesInput'
               className={styles.fpsCheckbox}
               setChecked={onShouldUpdateFramesChange}
             >
-              <p>Output frames</p>
-              <InfoBox
-                className={styles.infoBox}
-                text={`If checked, the specified number of frames will be recorded as
-                screenshots and saved to disk. Per default, they are saved in the
-                user/screenshots folder. This feature can not be used together with
-                'loop playback'`}
-              />
+              <p>{getTranslation(language, 'OutFrames')}</p>
+              <InfoBox className={styles.infoBox} text={getTranslation(language, 'TextMessage')} />
             </Checkbox>
             {shouldOutputFrames && (
               <Input
                 value={outputFramerate}
                 label={fpsLabel}
-                placeholder="framerate"
+                placeholder={getTranslation(language, 'Framerate')}
                 className={styles.fpsInput}
                 visible={shouldOutputFrames ? 'visible' : 'hidden'}
                 onChange={(evt) => updateOutputFramerate(evt)}
@@ -327,9 +305,9 @@ function SessionRec() {
           </Row>
           <Row>
             <Select
-              menuPlacement="top"
-              label="Playback file"
-              placeholder="Select playback file..."
+              menuPlacement='top'
+              label={getTranslation(language, 'PlayFile')}
+              placeholder={getTranslation(language, 'SelectPlay')}
               onChange={setPlaybackFile}
               options={options}
               value={filenamePlayback}
@@ -337,15 +315,15 @@ function SessionRec() {
             <div className={Popover.styles.row}>
               <Button
                 onClick={togglePlayback}
-                title="Start Playback"
+                title={getTranslation(language, 'StartPlay')}
                 block
                 small
                 transparent={false}
                 style={{ width: 90 }}
                 disabled={!filenamePlayback}
               >
-                <MdPlayArrow alt="resume" />
-                <span style={{ marginLeft: 5 }}>Play</span>
+                <MdPlayArrow alt='resume' />
+                <span style={{ marginLeft: 5 }}>{getTranslation(language, 'Play')}</span>
               </Button>
             </div>
           </Row>
@@ -354,11 +332,11 @@ function SessionRec() {
     );
   }
 
-  const shouldShowPopover = (engineMode === EngineModeUserControl) && showPopover && isIdle();
+  const shouldShowPopover = engineMode === EngineModeUserControl && showPopover && isIdle();
   return (
     <div className={Picker.Wrapper}>
-      { picker() }
-      { shouldShowPopover && popover() }
+      {picker()}
+      {shouldShowPopover && popover()}
     </div>
   );
 }

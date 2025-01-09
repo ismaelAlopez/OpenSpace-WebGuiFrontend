@@ -1,7 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { clamp } from 'lodash/number';
 import PropTypes from 'prop-types';
-
+import { getTranslation } from '../../../../utils/translation';
 import { roundValueToStepSize } from '../../../../utils/rounding';
 import Row from '../../Row/Row';
 import Tooltip from '../../Tooltip/Tooltip';
@@ -12,9 +13,25 @@ import styles from './MinMaxRangeInput.scss';
 const Scale = require('d3-scale');
 
 function MinMaxRangeInput({
-  valueMin, valueMax, min, max, disabled, inputOnly, exponent, step,
-  onMinValueChanged, onMaxValueChanged, placeholder, label, className,
-  wide, noHoverHint, noTooltip, noValue, type, ...props
+  valueMin,
+  valueMax,
+  min,
+  max,
+  disabled,
+  inputOnly,
+  exponent,
+  step,
+  onMinValueChanged,
+  onMaxValueChanged,
+  placeholder,
+  label,
+  className,
+  wide,
+  noHoverHint,
+  noTooltip,
+  noValue,
+  type,
+  ...props
 }) {
   const [minValue, setMinValue] = React.useState(valueMin);
   const [maxValue, setMaxValue] = React.useState(valueMax);
@@ -50,7 +67,7 @@ function MinMaxRangeInput({
   // Used to initialize
   React.useMemo(() => {
     // Prevent setting exponent to zero, as it breaks the scale
-    const exp = (exponent === 0) ? 1.0 : exponent;
+    const exp = exponent === 0 ? 1.0 : exponent;
 
     // If linear scale, we want the resolution to match the step size
     if (exp === 1.0) {
@@ -176,19 +193,24 @@ function MinMaxRangeInput({
       styleWidth = normalizedMaxValue - hoverHintNow;
     };
 
-    if (hoverHintNow < normalizedMinValue) { // mouse < minValue
+    if (hoverHintNow < normalizedMinValue) {
+      // mouse < minValue
       putLeftSliderOnTop();
-    } else if (hoverHintNow < normalizedMaxValue) { // minValue < mouse < maxValue
+    } else if (hoverHintNow < normalizedMaxValue) {
+      // minValue < mouse < maxValue
       // Pick the closest handle
       const leftDistance = hoverHintNow - normalizedMinValue;
       const rightDistance = normalizedMaxValue - hoverHintNow;
 
-      if (leftDistance < rightDistance) { // closer to the left
+      if (leftDistance < rightDistance) {
+        // closer to the left
         putLeftSliderOnTop();
-      } else { // closer to the right
+      } else {
+        // closer to the right
         putRightSliderOnTop();
       }
-    } else { // mouse > maxValue
+    } else {
+      // mouse > maxValue
       putRightSliderOnTop();
     }
 
@@ -254,6 +276,7 @@ function MinMaxRangeInput({
   }
 
   function renderTextInput() {
+    const language = useSelector((state) => state.language);
     const valueIsInvalid = enteredInvalidMinValue || enteredInvalidMaxValue;
     const valueIsOutsideRange = isMinValueOutsideRange || isMaxValueOutsideRange;
     const valueIsBad = valueIsInvalid || valueIsOutsideRange;
@@ -277,7 +300,7 @@ function MinMaxRangeInput({
           <Input
             {...props}
             className={`${isMinBad && styling}`}
-            type="number"
+            type='number'
             value={minValue}
             label={label || placeholder}
             onBlur={onMinTextBlur}
@@ -291,7 +314,7 @@ function MinMaxRangeInput({
           <Input
             {...props}
             className={`${isMaxBad && styling}`}
-            type="number"
+            type='number'
             value={maxValue}
             label={' '}
             onBlur={onMaxTextBlur}
@@ -307,17 +330,14 @@ function MinMaxRangeInput({
               className={styling}
               fixed
               style={{ ...textTooltipPosition() }}
-              placement="right"
+              placement='right'
             >
               {valueIsOutsideRange && (
                 <p>
-                  {`Value is outside the valid range: `}
-                  <b>{`[${min}, ${max}].`}</b>
+                  {getTranslation(language, 'OutSide')} <b>{`[${min}, ${max}].`}</b>
                 </p>
               )}
-              {valueIsInvalid && (
-                <p>Value is not a number</p>
-              )}
+              {valueIsInvalid && <p>{getTranslation}</p>}
             </Tooltip>
           )}
         </Row>
@@ -341,18 +361,21 @@ function MinMaxRangeInput({
         onContextMenu={enableTextInput}
         ref={wrapperRef}
       >
-        { !noHoverHint && hoverHint !== null && (
+        {!noHoverHint && hoverHint !== null && (
           <div className={styles.hoverHint} style={hoverHintStyle} />
         )}
-        { !noTooltip && hoverHint !== null && (
-          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement="top">
-            { tooltipValue }
+        {!noTooltip && hoverHint !== null && (
+          <Tooltip style={{ left: `${100 * hoverHint}%` }} placement='top'>
+            {tooltipValue}
           </Tooltip>
         )}
         <div
           className={`${className} ${styles.sliderProgress}`}
           style={{
-            '--min': 0, '--max': sliderResolution.current, '--minValue': scaledMinValue, '--maxValue': scaledMaxValue
+            '--min': 0,
+            '--max': sliderResolution.current,
+            '--minValue': scaledMinValue,
+            '--maxValue': scaledMaxValue
           }}
         />
         <input
@@ -360,7 +383,7 @@ function MinMaxRangeInput({
           className={`${className} ${styles.range} ${styles.left}`}
           id={id.current.concat(' left')}
           ref={minSliderRef}
-          type="range"
+          type='range'
           value={scaledMinValue}
           min={0}
           max={sliderResolution.current}
@@ -373,7 +396,7 @@ function MinMaxRangeInput({
           }}
           // Put left handle on top on the far right, so it does not get stuck
           // if both handles are at the rightmost edge
-          style={{ zIndex: minValue > (max - max / 10) && '5' }}
+          style={{ zIndex: minValue > max - max / 10 && '5' }}
           onMouseMove={onMouseMove}
           onMouseLeave={onLeave}
           disabled={disabled}
@@ -384,7 +407,7 @@ function MinMaxRangeInput({
           className={`${className} ${styles.range} ${styles.right} ${styles.mainSlider}`}
           id={id.current.concat(' right')}
           ref={maxSliderRef}
-          type="range"
+          type='range'
           value={scaledMaxValue}
           min={0}
           max={sliderResolution.current}
@@ -399,14 +422,10 @@ function MinMaxRangeInput({
           onMouseLeave={onLeave}
         />
         <label htmlFor={id.current} className={`${styles.rangeLabel}`}>
-          { label || placeholder }
+          {label || placeholder}
         </label>
-        <span className={styles.leftValue}>
-          { roundValueToStepSize(minValue, step) }
-        </span>
-        <span className={styles.rightValue}>
-          { roundValueToStepSize(maxValue, step) }
-        </span>
+        <span className={styles.leftValue}>{roundValueToStepSize(minValue, step)}</span>
+        <span className={styles.rightValue}>{roundValueToStepSize(maxValue, step)}</span>
       </div>
     );
   }
