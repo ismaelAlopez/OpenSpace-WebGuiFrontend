@@ -2,10 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import {
-  subscribeToProperty,
-  unsubscribeToProperty
-} from '../../api/Actions';
+import { subscribeToProperty, unsubscribeToProperty } from '../../api/Actions';
 import { ExoplanetsModuleEnabledKey, SkyBrowserModuleEnabledKey } from '../../api/keys';
 import { getBoolPropertyValue } from '../../utils/propertyTreeHelpers';
 
@@ -23,14 +20,12 @@ import TimePicker from './TimePicker';
 
 import styles from './BottomBar.scss';
 
-export default function BottomBar({
-  showFlightController
-}) {
-  const showExoplanets = useSelector(
-    (state) => getBoolPropertyValue(state, ExoplanetsModuleEnabledKey)
+export default function BottomBar({ showFlightController }) {
+  const showExoplanets = useSelector((state) =>
+    getBoolPropertyValue(state, ExoplanetsModuleEnabledKey)
   );
-  const showSkyBrowser = useSelector(
-    (state) => getBoolPropertyValue(state, SkyBrowserModuleEnabledKey)
+  const showSkyBrowser = useSelector((state) =>
+    getBoolPropertyValue(state, SkyBrowserModuleEnabledKey)
   );
   const missions = useSelector((state) => state.missions);
   const showMissions = missions?.isInitialized && missions?.data?.missions;
@@ -41,7 +36,8 @@ export default function BottomBar({
   useEffect(() => {
     // componentDidMount
     dispatch(subscribeToProperty(ExoplanetsModuleEnabledKey));
-    return () => { // componentWillUnmount
+    return () => {
+      // componentWillUnmount
       dispatch(unsubscribeToProperty(ExoplanetsModuleEnabledKey));
     };
   }, []);

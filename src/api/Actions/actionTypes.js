@@ -19,7 +19,6 @@ const actionTypes = {
   updateCustomGroupOrdering: 'GROUP_ORDERING_UPDATE',
   //Language
   setLanguage: 'SET_LANGUAGE',
-  getLanguage: 'GET_LANGUAGE',
 
   updateTime: 'TIME_UPDATE',
   subscribeToTime: 'TIME_SUBSCRIBE',

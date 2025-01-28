@@ -8,10 +8,9 @@ import Tooltip from '../../common/Tooltip/Tooltip';
 import { DisplayType, makeUtcDate } from './missionUtils';
 
 import styles from './Timeline.scss';
-
-function Arrow({
-  x, y, orientation, onClick, width = 20
-}) {
+import { getTranslation } from '../../../utils/translation';
+import { useSelector } from 'react-redux';
+function Arrow({ x, y, orientation, onClick, width = 20 }) {
   // Pad in different directions depending on rotation
   let rotation = 0;
   let centerX = 0;
@@ -47,6 +46,7 @@ export default function Timeline({
   setDisplayedPhase,
   timeRange
 }) {
+  const language = useSelector((state) => state.language.language);
   // d3 state and translation
   const [k, setK] = React.useState(1); // Scale, d3 notation
   const [y, setY] = React.useState(0); // Translation, d3 notation
@@ -61,12 +61,15 @@ export default function Timeline({
 
   // Set the dimensions and margins of the graph
   const margin = {
-    top: 0, right: 10, bottom: 70, left: 60
+    top: 0,
+    right: 10,
+    bottom: 70,
+    left: 60
   };
   // Minimum width of a phase
   const minLevelWidth = 15;
   // Ensure graph is large enough to show all phases
-  const minWidth = (minLevelWidth * nestedLevels) + margin.left + margin.right;
+  const minWidth = minLevelWidth * nestedLevels + margin.left + margin.right;
   // Height of buttons that control zoom
   const zoomButtonHeight = 40;
   // Height of graph
@@ -76,7 +79,10 @@ export default function Timeline({
   // Min and max scale
   const scaleExtent = [1, 1000];
   // Min and max translation
-  const translateExtent = [[0, 0], [width, height - margin.bottom]];
+  const translateExtent = [
+    [0, 0],
+    [width, height - margin.bottom]
+  ];
   // How many pixels over and below graph will still show content
   const paddingGraph = 10;
   // "Padding" for the arrow - how far away from the edge it is displayed
@@ -100,15 +106,18 @@ export default function Timeline({
   const tooltipMargin = 10;
 
   // Calculate scaling for x and y
-  const xScale = d3.scaleLinear()
+  const xScale = d3
+    .scaleLinear()
     .range([margin.left, width - margin.right])
     .domain([0, nestedLevels]);
-  let yScale = d3.scaleUtc()
+  let yScale = d3
+    .scaleUtc()
     .range([height - margin.bottom, margin.top])
     .domain(timeRange);
 
   // Calculate axes
-  const xAxis = d3.axisTop()
+  const xAxis = d3
+    .axisTop()
     .scale(xScale)
     .tickFormat(() => ``)
     .tickSize(0)
@@ -128,7 +137,8 @@ export default function Timeline({
     d3.select(xAxisRef.current).call(xAxis);
     d3.select(yAxisRef.current).call(yAxis);
 
-    d3.select(yAxisRef.current).selectAll('.tick text')
+    d3.select(yAxisRef.current)
+      .selectAll('.tick text')
       .style('font-size', '1.3em')
       .style('font-family', 'Segoe UI');
 
@@ -138,7 +148,10 @@ export default function Timeline({
   // When height changes of window, rescale y axis
   React.useEffect(() => {
     // Update the axis every time window rescales
-    yScale = d3.scaleUtc().range([height - margin.bottom, margin.top]).domain(timeRange);
+    yScale = d3
+      .scaleUtc()
+      .range([height - margin.bottom, margin.top])
+      .domain(timeRange);
     yAxis = d3.axisLeft().scale(yScale);
     d3.select(yAxisRef.current).call(yAxis);
   }, [height]);
@@ -146,7 +159,8 @@ export default function Timeline({
   // Add zoom
   // Update zoom function every time the y scale changes (when window is resized)
   React.useEffect(() => {
-    zoomRef.current = d3.zoom()
+    zoomRef.current = d3
+      .zoom()
       .on('zoom', (event) => {
         const newScaleY = event.transform.rescaleY(yScale);
         d3.select(yAxisRef.current).call(yAxis.scale(newScaleY));
@@ -162,7 +176,7 @@ export default function Timeline({
   // Transition to center the current time indicator
   function centerTime() {
     // Calculate new translation
-    const centerY = (height * 0.5) / (k);
+    const centerY = (height * 0.5) / k;
     const deltaY = centerY - yScale(now);
 
     // Apply transform
@@ -180,9 +194,7 @@ export default function Timeline({
       .call(
         zoomRef.current.transform,
         d3.zoomIdentity,
-        d3.zoomTransform(
-          d3.select(svgRef.current).node()
-        ).invert([width * 0.5, height * 0.5])
+        d3.zoomTransform(d3.select(svgRef.current).node()).invert([width * 0.5, height * 0.5])
       );
   }
 
@@ -230,16 +242,16 @@ export default function Timeline({
       <rect
         key={`${phase.name}${startTime.toString()}${endTime.toString()}${color}`}
         x={xScale(nestedLevels - nestedLevel - 1) - padding}
-        y={yScale(endTime) - (paddingY)}
+        y={yScale(endTime) - paddingY}
         ry={radiusY}
         rx={radiusPhase}
-        height={yScale(startTime) - yScale(endTime) + (2 * paddingY)}
-        width={xScale(1) - xScale(0) + (2 * padding)}
+        height={yScale(startTime) - yScale(endTime) + 2 * paddingY}
+        width={xScale(1) - xScale(0) + 2 * padding}
         onClick={(e) => {
           setDisplayedPhase({ type: DisplayType.phase, data: phase });
           onClick(e, startTime);
         }}
-        onMouseOver={(e) => mouseOver(e, 'Phase', phase.name)}
+        onMouseOver={(e) => mouseOver(e, getTranslation(language, 'phase'), phase.name)}
         onMouseLeave={mouseLeave}
         className={isCurrent ? styles.barHighlighted : styles.bar}
         strokeWidth={0}
@@ -255,7 +267,7 @@ export default function Timeline({
       return null;
     }
     const lineWidthScaled = lineWidth / k; // Ensure line doesn't get stretched when zooming
-    const yPosition = yScale(now) - (lineWidthScaled * 0.5); // Center line around time
+    const yPosition = yScale(now) - lineWidthScaled * 0.5; // Center line around time
     return (
       <rect
         key={now.toUTCString()}
@@ -292,8 +304,8 @@ export default function Timeline({
   // Used for milestones
   function createPolygon(date, color = undefined, noBorder = false, padding = 0) {
     const time = makeUtcDate(date.date);
-    const w = polygonSize + (2 * padding); // width of polygon
-    const yPoly = yScale(time) - ((w * 0.5) / k);
+    const w = polygonSize + 2 * padding; // width of polygon
+    const yPoly = yScale(time) - (w * 0.5) / k;
     const x = margin.left - w;
     const centerOffsetX = 0.5 * w;
     // To make the key unique we need to make sure that the time is different for each
@@ -312,7 +324,7 @@ export default function Timeline({
           onClick(e, time);
           setDisplayedPhase({ type: DisplayType.milestone, data: date });
         }}
-        onMouseOver={(e) => mouseOver(e, 'Milestone', date.name)}
+        onMouseOver={(e) => mouseOver(e, getTranslation(language, 'milestone'), date.name)}
         onMouseLeave={mouseLeave}
         className={styles.polygon}
       />
@@ -325,8 +337,8 @@ export default function Timeline({
     if (!timeIndicatorRef.current || pixelPosition === 0) {
       return null;
     }
-    const centerX = ((fullWidth - margin.left - margin.right) * 0.5) + margin.left;
-    const isAtTop = pixelPosition <= (margin.top + zoomButtonHeight - paddingGraph);
+    const centerX = (fullWidth - margin.left - margin.right) * 0.5 + margin.left;
+    const isAtTop = pixelPosition <= margin.top + zoomButtonHeight - paddingGraph;
     const isAtBottom = pixelPosition > window.innerHeight - margin.bottom;
     if (!isAtTop && !isAtBottom) {
       return null;
@@ -354,8 +366,8 @@ export default function Timeline({
       <>
         <defs>
           <linearGradient id={id} x1={0} x2={0} y1={0} y2={1}>
-            <stop stopColor={firstColor} offset="0%" />
-            <stop stopColor={secondColor} offset="100%" />
+            <stop stopColor={firstColor} offset='0%' />
+            <stop stopColor={secondColor} offset='100%' />
           </linearGradient>
         </defs>
         <rect
@@ -378,7 +390,7 @@ export default function Timeline({
   let selectedPhaseIndex = 0;
   // Calculate clippath
   const clippathTop = margin.top - paddingGraph;
-  const clippathBottom = height - margin.bottom + (2 * paddingGraph);
+  const clippathBottom = height - margin.bottom + 2 * paddingGraph;
 
   return (
     <>
@@ -396,23 +408,23 @@ export default function Timeline({
         }}
       >
         <Button onClick={() => zoomByButton(0.5)} style={{ margin: 0, padding: 0 }}>
-          <MdZoomOut color="white" alt="zoom-out" style={{ fontSize: '1.5em' }} />
+          <MdZoomOut color='white' alt='zoom-out' style={{ fontSize: '1.5em' }} />
         </Button>
         <Button onClick={() => zoomByButton(2)} style={{ margin: 0, padding: 0 }}>
-          <MdZoomIn color="white" alt="zoom-in" style={{ fontSize: '1.5em' }} />
+          <MdZoomIn color='white' alt='zoom-in' style={{ fontSize: '1.5em' }} />
         </Button>
         <Button onClick={() => reset()} style={{ margin: 0, padding: 0 }}>
-          <MdZoomOutMap color="white" alt="full-view" style={{ fontSize: '1.5em' }} />
+          <MdZoomOutMap color='white' alt='full-view' style={{ fontSize: '1.5em' }} />
         </Button>
       </div>
       <Tooltip
         fixed
-        placement="left"
+        placement='left'
         className={styles.toolTip}
         style={{
           display: showToolTip ? 'block' : 'none',
           top: toolTipPosition[1],
-          left: toolTipPosition[0] - tooltipWidth - (2 * tooltipMargin),
+          left: toolTipPosition[0] - tooltipWidth - 2 * tooltipMargin,
           marginRight: tooltipMargin,
           width: tooltipWidth,
           overflowWrap: 'break-word'
@@ -434,42 +446,47 @@ export default function Timeline({
         }}
       >
         {/* This rect is here to swallow all mouse event, so dragging over the timeline
-          does not move the OS camera.- Note that it can't be completely transparent */ }
+          does not move the OS camera.- Note that it can't be completely transparent */}
         <rect width={width} height={height} style={{ fill: 'rgba(0, 0, 0, 0.01)' }} />
         <g transform={`translate(0, ${paddingGraph})`}>
           <g ref={xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
           <g ref={yAxisRef} transform={`translate(${margin.left}, ${0})`} />
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
-            {currentPhases?.map((currentPhase, index) => currentPhase.map((phase) => {
-              if (!phase.timerange?.start || !phase.timerange?.end) {
-                return null;
-              }
-              if (displayedPhase.type === DisplayType.phase &&
-                  displayedPhase.data.name === phase.name) {
-                // We want to draw the selected phase last so it appears on top
-                // Save for later
-                selectedPhase = phase;
-                selectedPhaseIndex = index;
-                return null;
-              }
-              return createRectangle(phase, index);
-            }))}
+            {currentPhases?.map((currentPhase, index) =>
+              currentPhase.map((phase) => {
+                if (!phase.timerange?.start || !phase.timerange?.end) {
+                  return null;
+                }
+                if (
+                  displayedPhase.type === DisplayType.phase &&
+                  displayedPhase.data.name === phase.name
+                ) {
+                  // We want to draw the selected phase last so it appears on top
+                  // Save for later
+                  selectedPhase = phase;
+                  selectedPhaseIndex = index;
+                  return null;
+                }
+                return createRectangle(phase, index);
+              })
+            )}
             {selectedPhase ? (
               <>
                 {createRectangle(selectedPhase, selectedPhaseIndex, 2, selectedBorder)}
                 {createRectangle(selectedPhase, selectedPhaseIndex)}
               </>
-            ) :
-              null}
+            ) : null}
           </g>
           <g transform={`translate(0, ${y})scale(1, ${k})`}>
             {createTimeIndicator()}
-            {captureTimes?.map(
-              (capture, index) => createCircle(makeUtcDate(capture), captureColor, index)
+            {captureTimes?.map((capture, index) =>
+              createCircle(makeUtcDate(capture), captureColor, index)
             )}
             {milestones?.map((milestone) => {
-              if (displayedPhase.type === DisplayType.milestone &&
-                  displayedPhase.data.name === milestone.name) {
+              if (
+                displayedPhase.type === DisplayType.milestone &&
+                displayedPhase.data.name === milestone.name
+              ) {
                 // We want to draw the selected phase last so it appears on top
                 // Save for later
                 selectedMilestone = milestone;
@@ -482,8 +499,7 @@ export default function Timeline({
                 {createPolygon(selectedMilestone, selectedBorder, true, 3)}
                 {createPolygon(selectedMilestone, milestoneColor, true)}
               </>
-            ) :
-              null}
+            ) : null}
           </g>
           {createCurrentTimeArrow()}
         </g>

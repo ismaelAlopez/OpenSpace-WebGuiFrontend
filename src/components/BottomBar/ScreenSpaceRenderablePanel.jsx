@@ -11,12 +11,14 @@ import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
 import ScrollOverlay from '../common/ScrollOverlay/ScrollOverlay';
 import PropertyOwner from '../Sidebar/Properties/PropertyOwner';
+import { getTranslation } from '../../utils/translation';
 
 import Picker from './Picker';
 
 import styles from './ScreenSpaceRenderablePanel.scss';
 
 function ScreenSpaceRenderablePanel() {
+  const language = useSelector((state) => state.language.language);
   const [slideName, setSlideName] = React.useState(undefined);
   const [slideURL, setSlideURL] = React.useState(undefined);
 
@@ -25,18 +27,20 @@ function ScreenSpaceRenderablePanel() {
     (state) => state.local.popovers.screenSpaceRenderables.visible
   );
   // Access the propertyOwners state so that useSelector is triggered by updates
-  const propertyOwners = useSelector(
-    (state) => (state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : [])
+  const propertyOwners = useSelector((state) =>
+    state.propertyTree.propertyOwners ? state.propertyTree.propertyOwners : []
   );
   const renderables = propertyOwners?.ScreenSpace?.subowners ?? [];
 
   const dispatch = useDispatch();
 
   function togglePopover() {
-    dispatch(setPopoverVisibility({
-      popover: 'screenSpaceRenderables',
-      visible: !popoverVisible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'screenSpaceRenderables',
+        visible: !popoverVisible
+      })
+    );
   }
 
   function updateSlideName(evt) {
@@ -65,27 +69,25 @@ function ScreenSpaceRenderablePanel() {
   }
 
   function popover() {
-    const slideNameLabel = <span>Slide name</span>;
+    const slideNameLabel = <span>{getTranslation(language, 'SlideNameLabel')}</span>;
     const slideURLLabel = <span>URL</span>;
-    const noSlidesLabel = <CenteredLabel>No active slides</CenteredLabel>;
+    const noSlidesLabel = (
+      <CenteredLabel>{getTranslation(language, 'NoSlidesLabel')}</CenteredLabel>
+    );
 
     let slideContent;
     if (renderables.length === 0) {
       slideContent = noSlidesLabel;
     } else {
       slideContent = renderables.map((prop) => (
-        <PropertyOwner
-          key={prop}
-          uri={prop}
-          expansionIdentifier={`P:${prop}`}
-        />
+        <PropertyOwner key={prop} uri={prop} expansionIdentifier={`P:${prop}`} />
       ));
     }
 
     return (
       <Popover
         className={Picker.Popover}
-        title="ScreenSpace Renderables"
+        title={getTranslation(language, 'ScreenSpaceRenderables')}
         closeCallback={() => togglePopover()}
         detachable
         attached
@@ -95,36 +97,34 @@ function ScreenSpaceRenderablePanel() {
             <Input
               value={slideName}
               label={slideNameLabel}
-              placeholder="Slide name..."
+              placeholder={getTranslation(language, 'SlidePlaceholder')}
               onChange={(evt) => updateSlideName(evt)}
             />
-            <div className="urlbox">
+            <div className='urlbox'>
               <Input
                 value={slideURL}
                 label={slideURLLabel}
-                placeholder="URL"
+                placeholder='URL'
                 onChange={(evt) => updateSlideURL(evt)}
               />
             </div>
             <div className={Popover.styles.row}>
               <Button
                 onClick={addSlide}
-                title="Add slide"
+                title={getTranslation(language, 'AddSlide')}
                 style={{ width: 90 }}
                 disabled={!slideName || !slideURL}
               >
-                <MdInsertPhoto alt="insert_photo" />
-                <span style={{ marginLeft: 5 }}>Add Slide</span>
+                <MdInsertPhoto alt='insert_photo' />
+                <span style={{ marginLeft: 5 }}>{getTranslation(language, 'AddSlide')}</span>
               </Button>
             </div>
           </Row>
         </div>
         <HorizontalDelimiter />
-        <div className={Popover.styles.title}>Slides </div>
+        <div className={Popover.styles.title}>{getTranslation(language, 'Slides')} </div>
         <div className={styles.slideList}>
-          <ScrollOverlay>
-            {slideContent}
-          </ScrollOverlay>
+          <ScrollOverlay>{slideContent}</ScrollOverlay>
         </div>
       </Popover>
     );
@@ -135,13 +135,13 @@ function ScreenSpaceRenderablePanel() {
       <Picker
         className={`${popoverVisible && Picker.Active}`}
         onClick={togglePopover}
-        refKey="ScreenSpaceRenderable"
+        refKey='ScreenSpaceRenderable'
       >
         <div>
-          <MdInsertPhoto className={Picker.Icon} alt="screenspacerenderable" />
+          <MdInsertPhoto className={Picker.Icon} alt='screenspacerenderable' />
         </div>
       </Picker>
-      { popoverVisible && popover() }
+      {popoverVisible && popover()}
     </div>
   );
 }

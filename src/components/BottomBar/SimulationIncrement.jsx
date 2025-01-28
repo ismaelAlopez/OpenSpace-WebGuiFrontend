@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  MdFastForward, MdFastRewind, MdPause, MdPlayArrow
-} from 'react-icons/md';
+import { MdFastForward, MdFastRewind, MdPause, MdPlayArrow } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { throttle } from 'lodash/function';
 
@@ -13,7 +11,7 @@ import ScaleInput from '../common/Input/ScaleInput/ScaleInput';
 import Select from '../common/Input/Select/Select';
 import Row from '../common/Row/Row';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
-
+import { getTranslation } from '../../utils/translation';
 import styles from './SimulationIncrement.scss';
 
 const updateDelayMs = 1000;
@@ -33,12 +31,12 @@ const updateDeltaTimeNow = (openspace, value, interpolationTime) => {
 const updateDeltaTime = throttle(updateDeltaTimeNow, updateDelayMs);
 
 const Steps = {
-  seconds: 'Seconds',
-  minutes: 'Minutes',
-  hours: 'Hours',
-  days: 'Days',
-  months: 'Months',
-  years: 'Years'
+  seconds: 'Second',
+  minutes: 'Minute',
+  hours: 'Hour',
+  days: 'Day',
+  months: 'Month',
+  years: 'Year'
 };
 const StepSizes = {
   [Steps.seconds]: 1,
@@ -70,6 +68,7 @@ Object.freeze(StepPrecisions);
 Object.freeze(Limits);
 
 function SimulationIncrement() {
+  const language = useSelector((state) => state.language.language);
   const [stepSize, setStepSize] = React.useState(Steps.seconds);
   const [beforeAdjust, setBeforeAdjust] = React.useState(0);
   const refs = useContextRefs();
@@ -133,7 +132,7 @@ function SimulationIncrement() {
     }
     if (value !== 0) {
       setBeforeAdjust(beforeAdjust || targetDeltaTime);
-      const quickAdjust = beforeAdjust + StepSizes[stepSize] * (value ** 5);
+      const quickAdjust = beforeAdjust + StepSizes[stepSize] * value ** 5;
       updateDeltaTimeNow(luaApi, quickAdjust);
     } else {
       updateDeltaTime.cancel();
@@ -153,10 +152,14 @@ function SimulationIncrement() {
   }
 
   function deltaTimeStepsContol() {
-    const adjustedNextDelta =
-      round10(nextDeltaTimeStep / StepSizes[stepSize], StepPrecisions[stepSize]);
-    const adjustedPrevDelta =
-      round10(prevDeltaTimeStep / StepSizes[stepSize], StepPrecisions[stepSize]);
+    const adjustedNextDelta = round10(
+      nextDeltaTimeStep / StepSizes[stepSize],
+      StepPrecisions[stepSize]
+    );
+    const adjustedPrevDelta = round10(
+      prevDeltaTimeStep / StepSizes[stepSize],
+      StepPrecisions[stepSize]
+    );
 
     const nextLabel = hasNextDeltaTimeStep ? `${adjustedNextDelta} ${stepSize} / second` : 'None';
     const prevLabel = hasPrevDeltaTimeStep ? `${adjustedPrevDelta} ${stepSize} / second` : 'None';
@@ -168,15 +171,20 @@ function SimulationIncrement() {
             block
             disabled={!hasPrevDeltaTimeStep}
             onClick={setPrevDeltaTimeStep}
-            ref={(el) => { refs.current.SpeedBackward = el; }}
+            ref={(el) => {
+              refs.current.SpeedBackward = el;
+            }}
           >
             <MdFastRewind />
           </Button>
-          <p className={styles.deltaTimeStepLabel}>
-            {prevLabel}
-          </p>
+          <p className={styles.deltaTimeStepLabel}>{prevLabel}</p>
         </div>
-        <div style={{ flex: 2 }} ref={(el) => { refs.current.Pause = el; }}>
+        <div
+          style={{ flex: 2 }}
+          ref={(el) => {
+            refs.current.Pause = el;
+          }}
+        >
           <Button block onClick={togglePause}>
             {isPaused ? <MdPlayArrow /> : <MdPause />}
           </Button>
@@ -186,33 +194,35 @@ function SimulationIncrement() {
             block
             disabled={!hasNextDeltaTimeStep}
             onClick={setNextDeltaTimeStep}
-            ref={(el) => { refs.current.SpeedForward = el; }}
+            ref={(el) => {
+              refs.current.SpeedForward = el;
+            }}
           >
             <MdFastForward />
           </Button>
-          <p className={styles.deltaTimeStepLabel}>
-            {nextLabel}
-          </p>
+          <p className={styles.deltaTimeStepLabel}>{nextLabel}</p>
         </div>
       </Row>
     );
   }
 
-  const adjustedDelta =
-    round10(targetDeltaTime / StepSizes[stepSize], StepPrecisions[stepSize]);
+  const adjustedDelta = round10(targetDeltaTime / StepSizes[stepSize], StepPrecisions[stepSize]);
 
-  const options = Object.values(Steps)
-    .map((step) => ({ value: step, label: step, isSelected: step === stepSize }));
+  const options = Object.values(Steps).map((step) => ({
+    value: step,
+    label: getTranslation(language, step),
+    isSelected: step === stepSize
+  }));
 
   return (
     <div>
       <Row>
         <Select
-          label="Display unit"
-          menuPlacement="top"
-          onChange={({ value }) => (
+          label={getTranslation(language, 'DisplayUnit')}
+          menuPlacement='top'
+          onChange={({ value }) =>
             Object.values(Steps).includes(value) ? setStepSize(value) : null
-          )}
+          }
           options={options}
           value={stepSize}
         />
@@ -223,7 +233,10 @@ function SimulationIncrement() {
           {...Limits[stepSize]}
           disabled={!luaApi}
           onValueChanged={setNegativeDeltaTime}
-          placeholder={`Negative ${stepSize} / second`}
+          placeholder={`${getTranslation(language, 'Negative')} ${getTranslation(
+            language,
+            stepSize
+          )} / ${getTranslation(language, 'Second')}`}
           value={-adjustedDelta}
           reverse
           noValue={adjustedDelta >= 0}
@@ -233,7 +246,10 @@ function SimulationIncrement() {
           {...Limits[stepSize]}
           disabled={!luaApi}
           onValueChanged={setPositiveDeltaTime}
-          placeholder={`${stepSize} / second`}
+          placeholder={`${getTranslation(language, stepSize)} / ${getTranslation(
+            language,
+            'Second'
+          )}`}
           value={adjustedDelta}
           noValue={adjustedDelta < 0}
           showOutsideRangeHint={false}
@@ -242,7 +258,7 @@ function SimulationIncrement() {
       <div style={{ height: '10px' }} />
       <ScaleInput
         defaultValue={0}
-        label="Quick adjust"
+        label={getTranslation(language, 'QuickAdjust')}
         min={-10}
         max={10}
         onChange={setQuickAdjust}

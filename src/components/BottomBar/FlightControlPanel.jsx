@@ -15,12 +15,14 @@ import InfoBox from '../common/InfoBox/InfoBox';
 import Button from '../common/Input/Button/Button';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-
+import { getTranslation } from '../../utils/translation';
 import Picker from './Picker';
 
 import styles from './FlightControlPanel.scss';
+import { get } from 'lodash';
 
 export default function FlightControlPanel() {
+  const language = useSelector((state) => state.language.language);
   const luaApi = useSelector((state) => state.luaApi);
   const popoverVisible = useSelector((state) => state.local.popovers.flightController.visible);
 
@@ -68,10 +70,12 @@ export default function FlightControlPanel() {
   function togglePopover() {
     const visible = !popoverVisible;
 
-    dispatch(setPopoverVisibility({
-      popover: 'flightController',
-      visible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'flightController',
+        visible
+      })
+    );
 
     // @TODO (2023-05-26, emmbr)I believe we should also handle disconnection a bit better, or at
     // least try to avoid connecting if alreday connected
@@ -99,21 +103,23 @@ export default function FlightControlPanel() {
 
     const infoBoxContent = (
       <>
-        <p>Interact with the area to control the camera. </p>
-        {' '}
-        <br />
-        <p><b>Mouse controls:</b></p>
-        <p>Click and drag to rotate. Hold</p>
+        <p>{getTranslation(language, 'InteractWithArea')}</p> <br />
+        <p>
+          <b>{getTranslation(language, 'MouseControls')}</b>
+        </p>
+        <p>{getTranslation(language, 'ClickAndDrag')}</p>
         <ul className={styles.list}>
-          <li>SHIFT to pan</li>
-          <li>CTRL to zoom (y-axis) or roll (x-axis)</li>
+          <li>{getTranslation(language, 'ShiftToPan')}</li>
+          <li>{getTranslation(language, 'CtrlToZoomOrRoll')}</li>
         </ul>
         <br />
-        <p><b>Touch controls:</b></p>
+        <p>
+          <b>{getTranslation(language, 'TouchControls')}</b>
+        </p>
         <ul className={styles.list}>
-          <li>1 finger to rotate</li>
-          <li>2 fingers to pan</li>
-          <li>3 fingers to zoom (y-axis) or roll (x-axis)</li>
+          <li>{getTranslation(language, 'OneFingerToRotate')}</li>
+          <li>{getTranslation(language, 'TwoFingersToPan')}</li>
+          <li>{getTranslation(language, 'ThreeFingersToZoomOrRoll')}</li>
         </ul>
       </>
     );
@@ -164,7 +170,7 @@ export default function FlightControlPanel() {
         type: 'inputState',
         inputState: {
           values: {
-            zoomIn: 0.00,
+            zoomIn: 0.0,
             orbitX: 0.0,
             orbitY: 0.0,
             panX: 0.0,
@@ -184,7 +190,7 @@ export default function FlightControlPanel() {
         type: 'inputState',
         inputState: {
           values: {
-            zoomIn: 0.00,
+            zoomIn: 0.0,
             orbitX: 0.0,
             orbitY: 0.0,
             panX: 0.0,
@@ -224,7 +230,7 @@ export default function FlightControlPanel() {
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.flightControlPopover}`}
-        title="Flight Control"
+        title={getTranslation(language, 'FlightControl')}
         closeCallback={togglePopover}
         detachable
         position={{ x: -350, y: -50 }}
@@ -234,15 +240,15 @@ export default function FlightControlPanel() {
           <Row>
             <Button
               onClick={toggleRotation}
-              title="Rotation friction"
+              title={getTranslation(language, 'RotationFriction')}
               style={{ width: 133, background: rotationButtonColor }}
               disabled={false}
             >
-              <span style={{ marginLeft: 5 }}>Rotation</span>
+              <span style={{ marginLeft: 5 }}>{getTranslation(language, 'Rotation')}</span>
             </Button>
             <Button
               onClick={toggleZoom}
-              title="Zoom friction"
+              title={getTranslation(language, 'ZoomFriction')}
               style={{ width: 133, background: zoomButtonColor }}
               disabled={false}
             >
@@ -250,18 +256,21 @@ export default function FlightControlPanel() {
             </Button>
             <Button
               onClick={toggleRoll}
-              title="Roll friction"
+              title={getTranslation(language, 'RollFriction')}
               style={{ width: 133, background: rollButtonColor }}
               disabled={false}
             >
-              <span style={{ marginLeft: 5 }}>Roll</span>
+              <span style={{ marginLeft: 5 }}>{getTranslation(language, 'Roll')}</span>
             </Button>
-            <InfoBox className={styles.infoButton} text="Controls to disable friction for different camera movements" />
+            <InfoBox
+              className={styles.infoButton}
+              text={getTranslation(language, 'DisableControl')}
+            />
           </Row>
         </div>
         <HorizontalDelimiter />
         <Row>
-          <div className={Popover.styles.title}>Control Area</div>
+          <div className={Popover.styles.title}>{getTranslation(language, 'ControlArea')}</div>
           <InfoBox className={styles.infoButton} text={infoBoxContent} />
         </Row>
         <div
@@ -276,7 +285,7 @@ export default function FlightControlPanel() {
           onTouchEnd={touchUp}
           onTouchCancel={touchUp}
           onTouchMove={touchMove}
-          id="controlArea"
+          id='controlArea'
         />
       </Popover>
     );
@@ -286,10 +295,10 @@ export default function FlightControlPanel() {
     <div className={Picker.Wrapper}>
       <Picker onClick={togglePopover}>
         <div>
-          <MdOpenWith className={Picker.Icon} alt="flightcontrol" />
+          <MdOpenWith className={Picker.Icon} alt='flightcontrol' />
         </div>
       </Picker>
-      { popoverVisible && popover() }
+      {popoverVisible && popover()}
     </div>
   );
 }

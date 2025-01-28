@@ -104,6 +104,14 @@ function SystemMenu({ showTutorial }) {
     dispatch(setLanguage(language));
   }
 
+  if (!luaApi) {
+    return null;
+  } else {
+    const script = `SetLanguage('${language}')`;
+    console.info('Setting language to', language);
+    api.executeLuaScript(script);
+  }
+
   // function saveChange() {
   //   if (!luaApi) { return; }
   //   luaApi.saveSettingsToProfile();

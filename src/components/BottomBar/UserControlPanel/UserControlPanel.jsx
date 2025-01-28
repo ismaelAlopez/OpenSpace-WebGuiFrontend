@@ -1,10 +1,8 @@
 import React from 'react';
 import { MdWeb } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-
-import {
-  addUserPanel, loadUserPanelData, setPopoverVisibility
-} from '../../../api/Actions';
+import { getTranslation } from '../../../utils/translation';
+import { addUserPanel, loadUserPanelData, setPopoverVisibility } from '../../../api/Actions';
 import HorizontalDelimiter from '../../common/HorizontalDelimiter/HorizontalDelimiter';
 import Button from '../../common/Input/Button/Button';
 import Input from '../../common/Input/Input/Input';
@@ -14,11 +12,10 @@ import Row from '../../common/Row/Row';
 import Picker from '../Picker';
 
 function UserControlPanel() {
+  const language = useSelector((state) => state.language.language);
   const [selectedPanel, setSelectedPanel] = React.useState('selectedPanel');
   const [panelURL, setPanelURL] = React.useState(undefined);
-  const popoverVisible = useSelector(
-    (state) => state.local.popovers.userControlPanel.visible
-  );
+  const popoverVisible = useSelector((state) => state.local.popovers.userControlPanel.visible);
   const luaApi = useSelector((state) => state.luaApi);
   const isDataInitialized = useSelector((state) => state.userPanels.isInitialized);
 
@@ -38,10 +35,12 @@ function UserControlPanel() {
     if (!popoverVisible) {
       dispatch(loadUserPanelData(luaApi));
     }
-    dispatch(setPopoverVisibility({
-      popover: 'userControlPanel',
-      visible: !popoverVisible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'userControlPanel',
+        visible: !popoverVisible
+      })
+    );
   }
 
   function updatePanelSelection(selection) {
@@ -65,14 +64,16 @@ function UserControlPanel() {
   }
 
   function popover() {
-    const placeholderText = 'Loading pages';
-    const options = Object.values(panelList)
-      .map((panel) => ({ value: panel.path, label: panel.name }));
+    const placeholderText = getTranslation(language, 'loadingPages');
+    const options = Object.values(panelList).map((panel) => ({
+      value: panel.path,
+      label: panel.name
+    }));
 
     return (
       <Popover
         className={Picker.Popover}
-        title="User Control Panels"
+        title={getTranslation(language, 'UserControlPanel')}
         closeCallback={() => togglePopover()}
         detachable
         attached
@@ -80,10 +81,10 @@ function UserControlPanel() {
         <div className={Popover.styles.content}>
           <Row>
             <Select
-              menuPlacement="top"
+              menuPlacement='top'
               placeholder={placeholderText}
               options={options}
-              label="Select Panel"
+              label={getTranslation(language, 'SelectPanel')}
               onChange={updatePanelSelection}
               value={selectedPanel}
             />
@@ -91,35 +92,35 @@ function UserControlPanel() {
             <div className={Popover.styles.row}>
               <Button
                 onClick={addPanel}
-                title="Add panel"
+                title={getTranslation(language, 'AddPanel')}
                 style={{ width: 90 }}
                 disabled={!selectedPanel}
               >
-                <MdWeb alt="add panel" />
-                <span style={{ marginLeft: 5 }}>Add Panel</span>
+                <MdWeb alt='add panel' />
+                <span style={{ marginLeft: 5 }}>{getTranslation(language, 'AddPanel')}</span>
               </Button>
             </div>
           </Row>
           <HorizontalDelimiter />
           <Row>
-            <div className={Popover.styles.title}>Add via HTTP</div>
-            <div className="urlbox">
+            <div className={Popover.styles.title}>{getTranslation(language, 'AddViaHTTP')}</div>
+            <div className='urlbox'>
               <Input
                 value={panelURL}
-                label="URL"
-                placeholder="URL"
+                label='URL'
+                placeholder='URL'
                 onChange={(evt) => updatePanelURL(evt)}
               />
             </div>
             <div className={Popover.styles.row}>
               <Button
                 onClick={addWebPanel}
-                title="Add panel"
+                title={getTranslation(language, 'AddPanel')}
                 style={{ width: 90 }}
                 disabled={!panelURL}
               >
-                <MdWeb alt="add panel" />
-                <span style={{ marginLeft: 5 }}>Add Panel</span>
+                <MdWeb alt='add panel' />
+                <span style={{ marginLeft: 5 }}>{getTranslation(language, 'AddPanel')}</span>
               </Button>
             </div>
           </Row>
@@ -133,13 +134,13 @@ function UserControlPanel() {
       <Picker
         className={`${popoverVisible && Picker.Active}`}
         onClick={togglePopover}
-        refKey="UserControl"
+        refKey='UserControl'
       >
         <div>
-          <MdWeb className={Picker.Icon} alt="user control" />
+          <MdWeb className={Picker.Icon} alt='user control' />
         </div>
       </Picker>
-      { popoverVisible && popover() }
+      {popoverVisible && popover()}
     </div>
   );
 }

@@ -3,10 +3,8 @@ import { MdLocationOn } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as geometry from 'spherical-geometry-js';
-
-import {
-  setPopoverVisibility
-} from '../../api/Actions';
+import { getTranslation } from '../../utils/translation';
+import { setPopoverVisibility } from '../../api/Actions';
 import { useLocalStorageState } from '../../utils/customHooks';
 import AnimatedCheckmark from '../common/AnimatedCheckmark/AnimatedCheckmark';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
@@ -24,20 +22,16 @@ import Picker from './Picker';
 import styles from './GeoPositionPanel.scss';
 
 // @TODO: Put in its own file, somewhere in common
-function MultiStateToggle({
-  labels, checked, setChecked, infoText
-}) {
+function MultiStateToggle({ labels, checked, setChecked, infoText }) {
+  const language = useSelector((state) => state.language.language);
   return (
     <div className={styles.wrapper}>
-      <p
-        className={`${styles.toggleTitle} ${styles.resultsTitle}`}
-        id="multiStateToggle"
-      >
-        Mode
+      <p className={`${styles.toggleTitle} ${styles.resultsTitle}`} id='multiStateToggle'>
+        {getTranslation(language, 'Mode')}
       </p>
       {infoText && (
         <InfoBox
-          panelscroll="multiStateToggle"
+          panelscroll='multiStateToggle'
           text={infoText}
           style={{ paddingTop: '3px', paddingRight: '3px' }}
         />
@@ -49,16 +43,14 @@ function MultiStateToggle({
               id={label}
               key={label}
               className={styles.toggle_option}
-              name="state-d"
-              type="radio"
+              name='state-d'
+              type='radio'
               onChange={() => setChecked(label)}
               checked={label === checked ? 'checked' : ''}
             />
-            <label
-              htmlFor={label}
-              key={`${label}label`}
-            >
-              {label}
+            <label htmlFor={label} key={`${label}label`}>
+              {/* Remove all spaces from the label so it can be use as a key for the getTranslation function */}
+              {getTranslation(language, label.replaceAll(' ', ''))}
             </label>
           </React.Fragment>
         ))}
@@ -109,15 +101,16 @@ function createSceneGraphNodeTable(globe, label, lat, long, alt) {
 
 function Place({ address, onClick, found }) {
   return (
-    <Button
-      onClick={onClick}
-      className={styles.place}
-    >
+    <Button onClick={onClick} className={styles.place}>
       <div className={styles.placeButton}>
         <p>{address}</p>
         {found && (
           <div style={{ width: '20px', height: '20px' }}>
-            <AnimatedCheckmark style={{ width: '20px', height: '20px' }} color="transparent" isAnimated={false} />
+            <AnimatedCheckmark
+              style={{ width: '20px', height: '20px' }}
+              color='transparent'
+              isAnimated={false}
+            />
           </div>
         )}
       </div>
@@ -132,9 +125,14 @@ Place.propTypes = {
 };
 
 function GeoPositionPanel() {
+  //get the current language
+  const language = useSelector((state) => state.language.language);
   const [inputValue, setInputValue] = useLocalStorageState('inputValue', '');
   const [places, setPlaces] = useLocalStorageState('places', undefined);
-  const [addedSceneGraphNodes, setAddedSceneGraphNodes] = useLocalStorageState('addedSceneGraphNodes', undefined);
+  const [addedSceneGraphNodes, setAddedSceneGraphNodes] = useLocalStorageState(
+    'addedSceneGraphNodes',
+    undefined
+  );
   const [latitude, setLatitude] = useLocalStorageState('latitude', 0);
   const [longitude, setLongitude] = useLocalStorageState('longitude', 0);
   const [altitude, setAltitude] = useLocalStorageState('altitude', '300');
@@ -149,10 +147,12 @@ function GeoPositionPanel() {
   const dispatch = useDispatch();
 
   function togglePopover() {
-    dispatch(setPopoverVisibility({
-      popover: 'geoposition',
-      visible: !popoverVisible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'geoposition',
+        visible: !popoverVisible
+      })
+    );
   }
 
   function calculateAltitude(extent) {
@@ -178,7 +178,9 @@ function GeoPositionPanel() {
     }
     const searchString = inputValue.replaceAll(' ', '+');
 
-    fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${searchString}&category=&outFields=*&forStorage=false&f=json`)
+    fetch(
+      `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=${searchString}&category=&outFields=*&forStorage=false&f=json`
+    )
       .then((response) => response.json())
       .then((json) => {
         // Remove duplicates
@@ -218,7 +220,7 @@ function GeoPositionPanel() {
         break;
       }
       case Interaction.addFocus: {
-      // Don't add if it is already added
+        // Don't add if it is already added
         if (addedSceneGraphNodes.indexOf(address) > -1) {
           break;
         }
@@ -261,64 +263,64 @@ function GeoPositionPanel() {
             <HorizontalDelimiter />
             <div className={styles.searchField}>
               <Input
-                placeholder="Search places..."
+                placeholder={getTranslation(language, 'SearchPlace')}
                 onEnter={() => getPlaces()}
                 onChange={(e) => {
                   setInputValue(e.target.value);
                 }}
                 clearable
               />
-              <Button onClick={() => getPlaces()}>Search</Button>
+              <Button onClick={() => getPlaces()}>{getTranslation(language, 'Search')}</Button>
             </div>
-            <p className={styles.resultsTitle}>Results</p>
-            {places && (
-              (places.length < 4) ? places?.map?.((place) => {
-                const address = place.attributes.LongLabel;
-                const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
-                return (
-                  <Place
-                    key={place.attributes.LongLabel}
-                    onClick={() => selectCoordinate(place.location, address, place.extent)}
-                    address={address}
-                    found={found}
-                  />
-                );
-              }) :
-                (
-                  <FilterList
-                    searchText="Filter results..."
-                    height="210px"
-                  >
-                    <FilterListData>
-                      {places?.map?.((place) => {
-                        const address = place.attributes.LongLabel;
-                        const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
-                        return (
-                          <Place
-                            key={place.attributes.LongLabel}
-                            onClick={() => selectCoordinate(place.location, address, place.extent)}
-                            address={address}
-                            found={found}
-                          />
-                        );
-                      })}
-                    </FilterListData>
-                  </FilterList>
-                )
-            )}
+            <p className={styles.resultsTitle}>{getTranslation(language, 'Results')}</p>
+            {places &&
+              (places.length < 4 ? (
+                places?.map?.((place) => {
+                  const address = place.attributes.LongLabel;
+                  const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
+                  return (
+                    <Place
+                      key={place.attributes.LongLabel}
+                      onClick={() => selectCoordinate(place.location, address, place.extent)}
+                      address={address}
+                      found={found}
+                    />
+                  );
+                })
+              ) : (
+                <FilterList searchText={getTranslation(language, 'FilterResults')} height='210px'>
+                  <FilterListData>
+                    {places?.map?.((place) => {
+                      const address = place.attributes.LongLabel;
+                      const found = Boolean(addedSceneGraphNodes.indexOf(address) > -1);
+                      return (
+                        <Place
+                          key={place.attributes.LongLabel}
+                          onClick={() => selectCoordinate(place.location, address, place.extent)}
+                          address={address}
+                          found={found}
+                        />
+                      );
+                    })}
+                  </FilterListData>
+                </FilterList>
+              ))}
             <div
               className={styles.content}
               style={{
-                position: 'absolute', bottom: 0, left: 0, width: '100%'
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: '100%'
               }}
             >
               <HorizontalDelimiter />
               <p className={styles.resultsTitle} style={{ padding: '5px 0px' }}>
-                Custom Coordinate
+                {getTranslation(language, 'Custom')}
               </p>
               <div className={styles.latLongInput}>
                 <NumericInput
-                  placeholder="Latitude"
+                  placeholder={getTranslation(language, 'Lat')}
                   onValueChanged={(value) => {
                     setLatitude(value);
                   }}
@@ -327,7 +329,7 @@ function GeoPositionPanel() {
                   max={90}
                 />
                 <NumericInput
-                  placeholder="Longitude"
+                  placeholder={getTranslation(language, 'Long')}
                   onValueChanged={(value) => {
                     setLongitude(value);
                   }}
@@ -336,7 +338,7 @@ function GeoPositionPanel() {
                   max={180}
                 />
                 <NumericInput
-                  placeholder="Altitude (km)"
+                  placeholder={getTranslation(language, 'Alt') + '(km)'}
                   onValueChanged={(value) => {
                     setAltitude(value);
                   }}
@@ -344,11 +346,9 @@ function GeoPositionPanel() {
                   min={0}
                   max={1000}
                 />
-                <Button
-                  onClick={() => enterLatLongAlt()}
-                  className={styles.latLongButton}
-                >
-                  {interaction}
+                <Button onClick={() => enterLatLongAlt()} className={styles.latLongButton}>
+                  {/* Remove all spaces from the label so it can be use as a key for the getTranslation function */}
+                  {getTranslation(language, interaction.replaceAll(' ', ''))}
                 </Button>
               </div>
             </div>
@@ -356,9 +356,7 @@ function GeoPositionPanel() {
         );
       default:
         return (
-          <CenteredLabel>
-            {`Currently there is no data for locations on ${currentAnchor}`}
-          </CenteredLabel>
+          <CenteredLabel>{`${getTranslation(language, 'NoData')} ${currentAnchor}`}</CenteredLabel>
         );
     }
   }
@@ -367,26 +365,24 @@ function GeoPositionPanel() {
     return (
       <Popover
         className={`${Picker.Popover} ${styles.geoPositionPanel}`}
-        title="Geo location"
+        title={getTranslation(language, 'GeoLocation')}
         closeCallback={() => togglePopover()}
         detachable
         attached
       >
         <div className={styles.content}>
           <MultiStateToggle
-            title="Mode"
+            title={getTranslation(language, 'Mode')}
             labels={Object.values(Interaction)}
             checked={interaction}
             setChecked={setInteraction}
-            infoText={"'Fly to' will fly the camera to the position, " +
-                "'Jump to' will place the camera at the position instantaneously and " +
-                "'Add Focus' will add a scene graph node at the position."}
+            infoText={getTranslation(language, 'InfoText')}
           />
           <Dropdown
             options={options}
             onChange={(anchor) => setCurrentAnchor(anchor.value)}
             value={currentAnchor}
-            placeholder="Select an anchor"
+            placeholder={getTranslation(language, 'SelectAnchor')}
           />
           {anchorPanel(currentAnchor)}
         </div>
@@ -399,11 +395,11 @@ function GeoPositionPanel() {
       <Picker
         className={`${popoverVisible && Picker.Active}`}
         onClick={() => togglePopover()}
-        refKey="GeoLocationPanel"
+        refKey='GeoLocationPanel'
       >
-        <MdLocationOn className={Picker.Icon} alt="geo-location" />
+        <MdLocationOn className={Picker.Icon} alt='geo-location' />
       </Picker>
-      { popoverVisible && popover() }
+      {popoverVisible && popover()}
     </div>
   );
 }

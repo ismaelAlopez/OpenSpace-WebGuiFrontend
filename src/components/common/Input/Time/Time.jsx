@@ -27,10 +27,6 @@ const Months =
   'January February March April May June July August September October November December'.split(
     ' '
   );
-// const Months =
-//   'Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre'.split(
-//     ''
-//   );
 
 function findIndexForMonth(input) {
   const isNumber = !Number.isNaN(Number(input));

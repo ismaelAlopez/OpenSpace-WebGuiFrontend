@@ -1,12 +1,8 @@
 import React from 'react';
 import { MdHdrStrong, MdPublic } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-
-import {
-  loadExoplanetsData,
-  removeExoplanets,
-  setPopoverVisibility
-} from '../../api/Actions';
+import { getTranslation } from '../../utils/translation';
+import { loadExoplanetsData, removeExoplanets, setPopoverVisibility } from '../../api/Actions';
 import { NavigationAimKey, NavigationAnchorKey } from '../../api/keys';
 import propertyDispatcher from '../../api/propertyDispatcher';
 import CenteredLabel from '../common/CenteredLabel/CenteredLabel';
@@ -34,6 +30,7 @@ const SIZE_1AU_RING_TAG = 'exoplanet_1au_ring';
 const SIZE_1AU_RING_PROPERTY = 'Modules.Exoplanets.ShowComparisonCircle';
 
 function ExoplanetsPanel() {
+  const language = useSelector((state) => state.language.language);
   const [starName, setStarName] = React.useState(undefined);
   const [isSettingsExpanded, setSettingsExpanded] = React.useState(false);
 
@@ -42,8 +39,8 @@ function ExoplanetsPanel() {
   const propertyOwners = useSelector((state) => state.propertyTree.propertyOwners);
 
   // Find already existing exoplent systems among the property owners
-  const systems = Object.values(propertyOwners).filter(
-    (owner) => owner.tags.includes('exoplanet_system')
+  const systems = Object.values(propertyOwners).filter((owner) =>
+    owner.tags.includes('exoplanet_system')
   );
   const exoplanetSystems = systems.map((owner) => `Scene.${owner.identifier}`);
 
@@ -96,10 +93,12 @@ function ExoplanetsPanel() {
   }, []);
 
   function togglePopover() {
-    dispatch(setPopoverVisibility({
-      popover: 'exoplanets',
-      visible: !popoverVisible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'exoplanets',
+        visible: !popoverVisible
+      })
+    );
   }
 
   function toggleShowHabitableZone() {
@@ -130,8 +129,8 @@ function ExoplanetsPanel() {
   }
 
   function removeExoplanetSystem(systemName) {
-    const matchingAnchor = (anchor.indexOf(systemName) === 0);
-    const matchingAim = (aim.indexOf(systemName) === 0);
+    const matchingAnchor = anchor.indexOf(systemName) === 0;
+    const matchingAim = aim.indexOf(systemName) === 0;
     if (matchingAnchor || matchingAim) {
       propertyDispatcher(dispatch, NavigationAnchorKey).set('Sun');
       propertyDispatcher(dispatch, NavigationAimKey).set('');
@@ -145,7 +144,9 @@ function ExoplanetsPanel() {
   }
 
   function popover() {
-    const noContentLabel = <CenteredLabel>No active systems</CenteredLabel>;
+    const noContentLabel = (
+      <CenteredLabel>{getTranslation(language, 'NoActiveSystem')}</CenteredLabel>
+    );
     const renderables = exoplanetSystems;
     let panelContent;
 
@@ -164,18 +165,15 @@ function ExoplanetsPanel() {
     return (
       <Popover
         className={Picker.Popover}
-        title="Exoplanet Systems"
+        title={getTranslation(language, 'Exoplanets')}
         closeCallback={togglePopover}
         detachable
         attached
       >
         <div className={Popover.styles.content}>
           <Row>
-            { hasSystems ? (
-              <FilterList
-                className={styles.list}
-                searchText="Star name..."
-              >
+            {hasSystems ? (
+              <FilterList className={styles.list} searchText={getTranslation(language, 'StarName')}>
                 <FilterListData>
                   {systemList.map((system) => (
                     <FocusEntry
@@ -189,79 +187,57 @@ function ExoplanetsPanel() {
               </FilterList>
             ) : (
               <CenteredLabel className={styles.redText}>
-                No exoplanet data was loaded
+                {getTranslation(language, 'NoExoplanetLoaded')}
               </CenteredLabel>
             )}
             <div className={Popover.styles.row}>
               <Button
                 onClick={addSystem}
-                title="Add system"
+                title={getTranslation(language, 'AddSystem')}
                 style={{ width: 90 }}
                 disabled={!starName}
               >
-                <MdPublic alt="add_system" />
-                <span style={{ marginLeft: 5 }}>Add System</span>
+                <MdPublic alt='add_system' />
+                <span style={{ marginLeft: 5 }}>{getTranslation(language, 'AddSystem')}</span>
               </Button>
             </div>
           </Row>
         </div>
         <HorizontalDelimiter />
         <ToggleContent
-          title="Settings"
+          title={getTranslation(language, 'Settings')}
           expanded={isSettingsExpanded}
           setExpanded={setSettingsExpanded}
         >
           <Checkbox
             checked={showHabitableZone}
-            name="showHabitableZone"
+            name='showHabitableZone'
             setChecked={toggleShowHabitableZone}
           >
             <span className={styles.checkboxLabel}>
-              Show Habitable Zones
+              {getTranslation(language, 'ShowHabitableZone')}
             </span>
-            <InfoBox
-              className={styles.infoBox}
-              text={`Show/Hide the habitable zone visualizations. Setting the value
-              automatically updates the visibility for all added exoplanet systems`}
-            />
+            <InfoBox className={styles.infoBox} text={getTranslation(language, 'Text')} />
           </Checkbox>
           <Checkbox
             checked={showOrbitUncertainty}
-            name="showOrbitUncertainty"
+            name='showOrbitUncertainty'
             setChecked={toggleShowOrbitUncertainty}
           >
-            <span className={styles.checkboxLabel}>
-              Show Orbit Uncertainty
-            </span>
-            <InfoBox
-              className={styles.infoBox}
-              text={`Show/Hide disc visualization of the uncertainty of the planetary
-              orbits. Setting the value automatically updates the visibility for all
-              added exoplanet systems`}
-            />
+            <span className={styles.checkboxLabel}>{getTranslation(language, 'ShowOrbit')}</span>
+            <InfoBox className={styles.infoBox} text={getTranslation(language, 'Text2')} />
           </Checkbox>
-          <Checkbox
-            checked={show1AuRing}
-            name="show1AuRing"
-            setChecked={toggleShow1AuRing}
-          >
+          <Checkbox checked={show1AuRing} name='show1AuRing' setChecked={toggleShow1AuRing}>
             <span className={styles.checkboxLabel}>
-              Show 1 AU Size Ring
+              {getTranslation(language, 'ShowOneAURing')}
             </span>
-            <InfoBox
-              className={styles.infoBox}
-              text={`If true, show a ring with the radius 1 AU around the host star of
-              each system, to use for size comparison. Setting the value automatically
-              updates the visibility for all added exoplanet systems`}
-            />
+            <InfoBox className={styles.infoBox} text={getTranslation(language, 'Text3')} />
           </Checkbox>
         </ToggleContent>
         <HorizontalDelimiter />
-        <div className={Popover.styles.title}>Added Systems </div>
+        <div className={Popover.styles.title}>{getTranslation(language, 'AddedSystem') + ' '}</div>
         <div className={styles.slideList}>
-          <ScrollOverlay>
-            {panelContent}
-          </ScrollOverlay>
+          <ScrollOverlay>{panelContent}</ScrollOverlay>
         </div>
       </Popover>
     );
@@ -272,13 +248,13 @@ function ExoplanetsPanel() {
       <Picker
         className={`${popoverVisible && Picker.Active}`}
         onClick={togglePopover}
-        refKey="Exoplanets"
+        refKey='Exoplanets'
       >
         <div>
-          <MdHdrStrong className={Picker.Icon} alt="exoplanets" />
+          <MdHdrStrong className={Picker.Icon} alt='exoplanets' />
         </div>
       </Picker>
-      { popoverVisible && popover() }
+      {popoverVisible && popover()}
     </div>
   );
 }

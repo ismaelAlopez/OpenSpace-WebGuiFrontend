@@ -26,7 +26,7 @@ import LoadingString from '../common/LoadingString/LoadingString';
 import Popover from '../common/Popover/Popover';
 import SmallLabel from '../common/SmallLabel/SmallLabel';
 import { useContextRefs } from '../GettingStartedTour/GettingStartedContext';
-import { getTranslation } from '../../utils/translation';
+import { getTranslation, manipTime } from '../../utils/translation';
 import Picker from './Picker';
 import SimulationIncrement from './SimulationIncrement';
 
@@ -129,7 +129,9 @@ function TimePicker() {
   function timeLabel() {
     if (time) {
       try {
-        return time.toUTCString();
+        time.toUTCString();
+        // it will return the time in the correct language before it gets printed
+        return manipTime(language, time.toUTCString());
       } catch {
         return time;
       }

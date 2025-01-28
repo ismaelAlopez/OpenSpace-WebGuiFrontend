@@ -1,7 +1,7 @@
 import React from 'react';
 import { IoTelescopeSharp } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { getTranslation } from '../../utils/translation';
 import {
   loadSkyBrowserData,
   setPopoverVisibility,
@@ -27,6 +27,7 @@ import wwtLogo from './wwtlogo.png';
 import styles from './SkyBrowserPanel.scss';
 
 function SkyBrowserPanel() {
+  const language = useSelector((state) => state.language.language);
   const [activeImage, setActiveImage] = React.useState('');
   const [currentTabHeight, setCurrentTabHeight] = React.useState(200);
   const [currentPopoverHeight, setCurrentPopoverHeightState] = React.useState(440);
@@ -49,8 +50,8 @@ function SkyBrowserPanel() {
   const isDataInitialized = useSelector((state) => state.skybrowser.isInitialized);
   const luaApi = useSelector((state) => state.luaApi);
   const popoverVisible = useSelector((state) => state.local.popovers.skybrowser.visible);
-  const hideTargetsBrowsersWithGui = useSelector(
-    (state) => getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey)
+  const hideTargetsBrowsersWithGui = useSelector((state) =>
+    getBoolPropertyValue(state, SkyBrowserHideTargetsBrowsersWithGuiKey)
   );
   const browserColor = useSelector((state) => {
     const browser = state.skybrowser.browsers?.[state.skybrowser.selectedBrowserId];
@@ -173,19 +174,22 @@ function SkyBrowserPanel() {
   }
 
   function createWwtBrowser() {
-    return (browsersExist && (
-      <WorldWideTelescope
-        setMessageFunction={(func) => { wwt.current = func; }}
-        setImageCollectionIsLoaded={setImageCollectionIsLoaded}
-        size={wwtSize}
-        setSize={setWwtSize}
-        position={wwtPosition}
-        togglePopover={togglePopover}
-        setPosition={setWwtPosition}
-        imageCollectionIsLoaded={imageCollectionIsLoaded}
-        browserColor={browserColor}
-      />
-    )
+    return (
+      browsersExist && (
+        <WorldWideTelescope
+          setMessageFunction={(func) => {
+            wwt.current = func;
+          }}
+          setImageCollectionIsLoaded={setImageCollectionIsLoaded}
+          size={wwtSize}
+          setSize={setWwtSize}
+          position={wwtPosition}
+          togglePopover={togglePopover}
+          setPosition={setWwtPosition}
+          imageCollectionIsLoaded={imageCollectionIsLoaded}
+          browserColor={browserColor}
+        />
+      )
     );
   }
 
@@ -196,12 +200,8 @@ function SkyBrowserPanel() {
   function createAddBrowserInterface() {
     const addBrowserPairButton = (
       <div className={styles.upperPart}>
-        <Button
-          onClick={addTargetBrowserPair}
-          className={styles.addTabButton}
-          transparent
-        >
-          <CenteredLabel>Add Sky Browser</CenteredLabel>
+        <Button onClick={addTargetBrowserPair} className={styles.addTabButton} transparent>
+          <CenteredLabel>{getTranslation(language, 'AddSky')}</CenteredLabel>
           <div className={styles.plus} />
         </Button>
       </div>
@@ -210,10 +210,8 @@ function SkyBrowserPanel() {
     const wwtLogoImg = (
       <div className={styles.credits}>
         <div className={styles.wwtLogoContainer}>
-          <img src={wwtLogo} alt="WwtLogo" className={styles.wwtLogo} />
-          <SmallLabel>
-            Powered by AAS WorldWide Telescope
-          </SmallLabel>
+          <img src={wwtLogo} alt='WwtLogo' className={styles.wwtLogo} />
+          <SmallLabel>{getTranslation(language, 'PowerBy')}</SmallLabel>
         </div>
       </div>
     );
@@ -229,23 +227,15 @@ function SkyBrowserPanel() {
   function popover() {
     let content = '';
     if (!dataIsLoaded || cameraInSolarSystem === undefined) {
-      content = (
-        <CenteredLabel>
-          Oops! There was a problem loading data from OpenSpace :(
-        </CenteredLabel>
-      );
+      content = <CenteredLabel>{getTranslation(language, 'Problem')}</CenteredLabel>;
     } else if (cameraInSolarSystem === false) {
-      content = (
-        <CenteredLabel>
-          The camera has to be within the solar system for the sky browser to work
-        </CenteredLabel>
-      );
+      content = <CenteredLabel>{getTranslation(language, 'Camara')}</CenteredLabel>;
     } else if (!browsersExist) {
       content = createAddBrowserInterface();
     } else if (!imageCollectionIsLoaded && browsersExist) {
       content = (
         <>
-          <CenteredLabel> Loading image collection... </CenteredLabel>
+          <CenteredLabel>{getTranslation(language, 'LoadingCollection')} </CenteredLabel>
           <div className={styles.loading}>
             <LoadingBlock loading />
           </div>
@@ -291,7 +281,7 @@ function SkyBrowserPanel() {
 
     return (
       <WindowThreeStates
-        title="AAS WorldWide Telescope"
+        title='AAS WorldWide Telescope'
         closeCallback={togglePopover}
         sizeCallback={setCurrentPopoverHeight}
         height={currentPopoverHeight}
@@ -307,10 +297,10 @@ function SkyBrowserPanel() {
     <div className={Picker.Wrapper}>
       <Picker
         onClick={togglePopover}
-        refKey="SkyBrowser"
+        refKey='SkyBrowser'
         className={`${popoverVisible && Picker.Active}`}
       >
-        <IoTelescopeSharp color="white" alt="WWT" className={Picker.Icon} />
+        <IoTelescopeSharp color='white' alt='WWT' className={Picker.Icon} />
       </Picker>
       {popoverVisible && popover()}
       {popoverVisible && createWwtBrowser()}

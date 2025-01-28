@@ -6,7 +6,7 @@ import { setPopoverVisibility } from '../../api/Actions';
 import HorizontalDelimiter from '../common/HorizontalDelimiter/HorizontalDelimiter';
 import Popover from '../common/Popover/Popover';
 import Row from '../common/Row/Row';
-
+import { getTranslation } from '../../utils/translation';
 import Picker from './Picker';
 
 import 'react-simple-keyboard/build/css/index.css';
@@ -18,13 +18,14 @@ import styles from './KeybindingPanel.scss';
 // import englishLayout from "simple-keyboard-layouts/build/layouts/english";
 
 function KeybindingPanel() {
+  const language = useSelector((state) => state.language.language);
   const [activeModifiers, setActiveModifiers] = React.useState([]);
   const [currentActionInfo, setCurrentActionInfo] = React.useState({
     input: '',
-    name: 'Select a key to see its action.',
-    description: 'A description of the action will appear here',
-    isLocal: 'Info about if the action is local will appear here',
-    path: 'The actions path will appear here'
+    name: 'Seleccione una tecla para ver su acción.',
+    description: 'Una descripción de la acción aparecerá aquí',
+    isLocal: 'La información sobre si la acción es local aparecerá aquí',
+    path: 'La ruta de las acciones aparecerá aquí'
   });
 
   const popoverVisible = useSelector((state) => state.local.popovers.keybinds.visible);
@@ -33,10 +34,12 @@ function KeybindingPanel() {
   const dispatch = useDispatch();
 
   function togglePopover() {
-    dispatch(setPopoverVisibility({
-      popover: 'keybinds',
-      visible: !popoverVisible
-    }));
+    dispatch(
+      setPopoverVisibility({
+        popover: 'keybinds',
+        visible: !popoverVisible
+      })
+    );
   }
 
   function handleModifier(modifier) {
@@ -64,11 +67,14 @@ function KeybindingPanel() {
       shift: activeModifiers.includes('shift'),
       super: activeModifiers.includes('super')
     };
-    const actionHasModifier = (action.modifiers.super || action.modifiers.alt ||
-                               action.modifiers.control || action.modifiers.shift);
+    const actionHasModifier =
+      action.modifiers.super ||
+      action.modifiers.alt ||
+      action.modifiers.control ||
+      action.modifiers.shift;
 
-    const matchingModifiers = (Object.entries(modifierObject).toString() ===
-                               Object.entries(action.modifiers).toString());
+    const matchingModifiers =
+      Object.entries(modifierObject).toString() === Object.entries(action.modifiers).toString();
 
     const noActiveModifiers = activeModifiers.length === 0;
 
@@ -98,7 +104,7 @@ function KeybindingPanel() {
       const action = actions.data[i];
       if (action.key) {
         if (checkForModifiers(action)) {
-          if ((action.key.toLowerCase() === key) || specialKeyMatch(key, action.key)) {
+          if (action.key.toLowerCase() === key || specialKeyMatch(key, action.key)) {
             keyActions.push(action);
           }
         }
@@ -108,9 +114,7 @@ function KeybindingPanel() {
     // Get the actual information about the action
     let actionsForKey = [];
     keyActions.forEach((keyAction) => {
-      const matched = actions.data.filter(
-        (action) => (action.identifier === keyAction.action)
-      );
+      const matched = actions.data.filter((action) => action.identifier === keyAction.action);
       actionsForKey = actionsForKey.concat(matched);
     });
     return actionsForKey;
@@ -118,7 +122,12 @@ function KeybindingPanel() {
 
   function onKeyPress(button) {
     // Handle modifier clicks
-    if ((button === '{shift}') || (button === '{alt}') || (button === '{control}') || (button === '{super}')) {
+    if (
+      button === '{shift}' ||
+      button === '{alt}' ||
+      button === '{control}' ||
+      button === '{super}'
+    ) {
       const strippedModifier = button.substr(1, button.length - 2);
       handleModifier(strippedModifier);
       return;
@@ -150,7 +159,7 @@ function KeybindingPanel() {
         action.documentation += mappedAction.documentation;
         action.isLocal += mappedAction.synchronization ? 'No' : 'Yes';
         action.guiPath += mappedAction.guiPath;
-        if (i !== (mappedActions.length - 1)) {
+        if (i !== mappedActions.length - 1) {
           action.name += '  &&  ';
           action.documentation += '  &&  ';
           action.isLocal += '  &&  ';
@@ -171,7 +180,8 @@ function KeybindingPanel() {
   function reverseSpecialKey(key) {
     if (key === 'Right') {
       return '{arrowright}';
-    } if (key === 'Left') {
+    }
+    if (key === 'Left') {
       return '{arrowleft}';
     }
     if (key.indexOf('Keypad') === 0) {
@@ -202,7 +212,8 @@ function KeybindingPanel() {
           break;
       }
       return `{numpad${keyswap}}`;
-    } if (!Number.isNaN(key - parseFloat(key))) {
+    }
+    if (!Number.isNaN(key - parseFloat(key))) {
       // is a number
       return key;
     }
@@ -306,7 +317,7 @@ function KeybindingPanel() {
           keyString = reverseSpecialKey(action.key);
         }
         if (checkForModifiers(action)) {
-          mappedButtonString += (`${keyString} `);
+          mappedButtonString += `${keyString} `;
         }
       }
     }
@@ -331,7 +342,7 @@ function KeybindingPanel() {
     return (
       <Popover
         className={`${Picker.Popover} && ${styles.keybindingPopover}`}
-        title="Keybinding Viewer"
+        title={getTranslation(language, 'KeybindingsPanel')}
         closeCallback={togglePopover}
         detachable
         position={{ x: -450, y: -150 }}
@@ -339,34 +350,34 @@ function KeybindingPanel() {
       >
         <HorizontalDelimiter />
         <div className={Popover.styles.content}>
-          <div className="keyboardContainer">
+          <div className='keyboardContainer'>
             <Keyboard
-              baseClass="simple-keyboard-main"
+              baseClass='simple-keyboard-main'
               // keyboardRef={(r) => (keyboard = r)}
-              layoutName="default"
+              layoutName='default'
               buttonTheme={buttonTheme}
               {...keyboardOptions}
             />
-            <div className="controlArrows">
+            <div className='controlArrows'>
               <Keyboard
-                baseClass="simple-keyboard-control"
+                baseClass='simple-keyboard-control'
                 buttonTheme={buttonTheme}
                 {...keyboardControlPadOptions}
               />
               <Keyboard
-                baseClass="simple-keyboard-arrows"
+                baseClass='simple-keyboard-arrows'
                 buttonTheme={buttonTheme}
                 {...keyboardArrowsOptions}
               />
             </div>
-            <div className="numPad">
+            <div className='numPad'>
               <Keyboard
-                baseClass="simple-keyboard-numpad"
+                baseClass='simple-keyboard-numpad'
                 buttonTheme={buttonTheme}
                 {...keyboardNumPadOptions}
               />
               <Keyboard
-                baseClass="simple-keyboard-numpadEnd"
+                baseClass='simple-keyboard-numpadEnd'
                 buttonTheme={buttonTheme}
                 {...keyboardNumPadEndOptions}
               />
@@ -376,19 +387,21 @@ function KeybindingPanel() {
           <Row>
             <div className={styles.textContainer}>
               <section>
-                <span className={styles.actionLabel}>Name: </span>
+                <span className={styles.actionLabel}>{getTranslation(language, 'Name')}</span>
                 {currentActionInfo.name}
               </section>
               <section>
-                <span className={styles.actionLabel}>Description: </span>
+                <span className={styles.actionLabel}>
+                  {getTranslation(language, 'Description')}
+                </span>
                 {currentActionInfo.name}
               </section>
               <section>
-                <span className={styles.actionLabel}>Is Local: </span>
+                <span className={styles.actionLabel}>{getTranslation(language, 'IsLocal')}</span>
                 {currentActionInfo.isLocal}
               </section>
               <section>
-                <span className={styles.actionLabel}>GUI Path: </span>
+                <span className={styles.actionLabel}>{getTranslation(language, 'GuiPath')}</span>
                 {currentActionInfo.path}
               </section>
             </div>
@@ -398,11 +411,7 @@ function KeybindingPanel() {
     );
   }
 
-  return (
-    <div className={Picker.Wrapper}>
-      { popoverVisible && popover() }
-    </div>
-  );
+  return <div className={Picker.Wrapper}>{popoverVisible && popover()}</div>;
 }
 
 export default KeybindingPanel;

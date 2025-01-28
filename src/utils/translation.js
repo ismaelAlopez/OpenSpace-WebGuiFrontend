@@ -1,3 +1,5 @@
+import { RollFrictionKey } from '../api/keys';
+
 export const getTranslation = (language, key) => {
   const translation = {
     en: {
@@ -62,6 +64,14 @@ export const getTranslation = (language, key) => {
       Thursday: 'Thursday',
       Friday: 'Friday',
       Saturday: 'Saturday',
+      //short week days
+      Sun: 'Sun',
+      Mon: 'Mon',
+      Tue: 'Tue',
+      Wed: 'Wed',
+      Thu: 'Thu',
+      Fri: 'Fri',
+      Sat: 'Sat',
       // days
       M: 'M',
       Tu: 'T',
@@ -99,12 +109,12 @@ export const getTranslation = (language, key) => {
       Interpolate: 'Interpolate',
       Set: 'Set',
       Cancel: 'Cancel',
-      Second: 'second',
-      Minute: 'minute',
-      Hour: 'hour',
-      Day: 'day',
-      Month: 'month',
-      Year: 'year',
+      Second: 'Second',
+      Minute: 'Minute',
+      Hour: 'Hour',
+      Day: 'Day',
+      Month: 'Month',
+      Year: 'Year',
       //OrginPicker.jsx
       SmallFocus: 'Focus',
       SmallAnchor: 'Anchor',
@@ -134,7 +144,109 @@ export const getTranslation = (language, key) => {
       SelectPlay: 'Select playback file...',
       StartPlay: 'Start Playback',
       Play: 'Play',
-      PlayFile: 'Playback file'
+      PlayFile: 'Playback file',
+      //GeoPositionPanel.jsx
+      SearchPlace: 'Search places...',
+      Results: 'Results',
+      FilterResults: 'Filter results...',
+      Custom: 'Custom Coordinates',
+      Lat: 'Latitude',
+      Long: 'Longitude',
+      Alt: 'Altitude',
+      NoData: 'Currently there is no data for locations on ',
+      GeoLocation: 'GeoLocation',
+      InfoText:
+        "'Fly to' will fly the camera to the position \n" +
+        "'Jump to' will place the camera at the position instantaneously and \n" +
+        "'Add Focus' will add a scene graph node at the position.",
+      SelectAnchor: 'Select an Anchor',
+      Mode: 'Mode',
+      FlyTo: 'Fly to',
+      JumpTo: 'Jump to',
+      AddFocus: 'Add Focus',
+      Search: 'Search',
+      //ScreenSpaceRenderablePanel.jsx
+      SlideNameLabel: 'Slide name',
+      NoSlidesLabel: 'No active slides',
+      ScreenSpaceRenderables: 'ScreenSpace Renderables',
+      SlidePlaceholder: 'Slide name...',
+      AddSlide: 'Add slide',
+      Slides: 'Slides',
+      //ExoplanetsPanel.jsx
+      NoActiveSystem: 'No active systems',
+      Exoplanets: 'Exoplanet Systems',
+      StarName: 'Star name...',
+      NoExoplanetLoaded: 'No exoplanet data was loaded',
+      AddSystem: 'Add System',
+      ShowHabitableZone: 'Show Habitable Zones',
+      Text: 'Show/Hide the habitable zone visualizations. Setting the value automatically updates the visibility for all added exoplanet systems',
+      ShowOrbit: 'Show Orbit Uncertainty',
+      Text2:
+        'Show/Hide disc visualization of the uncertainty of the planetary orbits. Setting the value automatically updates the visibility for all added exoplanet systems',
+      ShowOneAURing: 'Show 1 AU Size Ring',
+      Text3:
+        'If true, show a ring with the radius 1 AU around the host star of each system, to use for size comparison. Setting the value automatically updates the visibility for all added exoplanet systems',
+      AddedSystem: 'Added System',
+      //UserControlPanel.jsx
+      UserControlPanel: 'User Control Panel',
+      Loading: 'Loading...',
+      SelectPanel: 'Select Panel',
+      AddPanel: 'Add Panel',
+      AddViaHTTP: 'Add via HTTP',
+      LoadingPages: 'Loading pages',
+      //FlightControlPanel.jsx
+      //SkyBrowserPanel.jsx
+      AddSky: 'Add Sky Browser',
+      PowerBy: 'Powered by AAS WorldWide Telescope',
+      Problem: 'Oops! There was a problem loading data from OpenSpace :',
+      Camara: 'The camera has to be within the solar system for the sky browser to work',
+      LoadingCollection: 'Loading image collection...',
+      //Missions.jsx
+      Mission: 'Mission',
+      phase: 'Phase',
+      milestone: 'Milestone',
+      SetTimeEnd: 'Set Time to End of ',
+      SetTimeStart: 'Set Time to Beginning of ',
+      SetTime: 'Set Time',
+      Overview: 'Overview',
+      CurrentPhase: 'Current Phase',
+      ReadMore: 'Read more',
+      NoCurrentPhase: 'No current phase in this mission',
+      SetTimeFirstCapture: 'Set time to Next Capture',
+      SetTimeLastCapture: 'Set time to Last Capture',
+      //KeybindingPanel.jsx
+      Name: 'Name: ',
+      Description: 'Description: ',
+      IsLocal: 'Is Local: ',
+      GuiPath: 'GUI Path: ',
+      // Breaks the functionality of the keybindings panel
+      // NameDesc: 'Select a key to see its action.',
+      // DescriptionDesc: 'A description of the action will appear here',
+      // IsLocalDesc: 'Info about if the action is local will appear here',
+      // PathDesc: 'The actions path will appear here',
+      keybindingsPanel: 'Keybinding Viewer',
+      //SimulationIncrement.jsx
+      DisplayUnit: 'Display Unit',
+      Negative: 'Negative',
+      QuickAdjust: 'Quick Adjust',
+      //FlightControlPanel.jsx
+      InteractWithArea: 'Interact with the area to control the camera.',
+      MouseControls: 'Mouse controls:',
+      ClickAndDrag: 'Click and drag to rotate. Hold',
+      ShiftToPan: 'SHIFT to pan',
+      CtrlToZoomOrRoll: 'CTRL to zoom (y-axis) or roll (x-axis)',
+      TouchControls: 'Touch controls:',
+      OneFingerToRotate: '1 finger to rotate',
+      TwoFingersToPan: '2 fingers to pan',
+      ThreeFingersToZoomOrRoll: '3 fingers to zoom (y-axis) or roll (x-axis)',
+      FlightControl: 'Flight Control',
+      RotationFriction: 'Rotation friction',
+      Rotation: 'Rotation',
+      ZoomFriction: 'Zoom friction',
+      RollFriction: 'Roll friction',
+      Roll: 'Roll',
+      DisableControls: 'Controls to disable friction for different camera movements',
+      ControlArea: 'Control Area'
     },
     es: {
       //Sidebar.jsx and scenePane.jsx
@@ -198,6 +310,14 @@ export const getTranslation = (language, key) => {
       Thursday: 'Jueves',
       Friday: 'Viernes',
       Saturday: 'Sábado',
+      //short week days
+      Sun: 'Dom',
+      Mon: 'Lun',
+      Tue: 'Mar',
+      Wed: 'Mié',
+      Thu: 'Jue',
+      Fri: 'Vie',
+      Sat: 'Sáb',
       // days
       M: 'L',
       Tu: 'M',
@@ -268,8 +388,123 @@ export const getTranslation = (language, key) => {
       SelectPlay: 'Seleccionar archivo de reproducción...',
       StartPlay: 'Iniciar reproducción',
       Play: 'Iniciar',
-      PlayFile: 'Archivo de reproducción'
+      PlayFile: 'Archivo de reproducción',
+      //GeoPositionPanel.jsx
+      SearchPlace: 'Buscar lugares...',
+      Results: 'Resultados',
+      FilterResults: 'Filtrar resultados...',
+      Custom: 'Coordenadas personalizadas',
+      Lat: 'Latitud',
+      Long: 'Longitud',
+      Alt: 'Altitud',
+      NoData: 'Actualmente no hay datos para ubicaciones en ',
+      GeoLocation: 'Ubicación geográfica',
+      InfoText:
+        "'Volar a' volará la cámara a la posición' \n" +
+        "'Saltar a' colocará la cámara en la posición instantáneamente y \n" +
+        "'Agregar enfoque' agregará un nodo de gráfico de escena en la posición.",
+      SelectAnchor: 'Seleccionar un ancla',
+      Mode: 'Modo',
+      FlyTo: 'Volar a',
+      JumpTo: 'Saltar a',
+      AddFocus: 'Agregar enfoque',
+      Search: 'Buscar',
+      //ScreenSpaceRenderablePanel.jsx
+      SlideNameLabel: 'Nombre de diapositiva',
+      NoSlidesLabel: 'No hay diapositivas activas',
+      ScreenSpaceRenderables: 'Renderizables de espacio de pantalla',
+      SlidePlaceholder: 'diapositiva...',
+      AddSlide: 'Agregar diapositiva',
+      Slides: 'Diapositivas',
+      //ExoplanetsPanel.jsx
+      NoActiveSystem: 'No hay sistemas activos',
+      Exoplanets: 'Sistemas de exoplanetas',
+      StarName: 'Nombre de estrella...',
+      NoExoplanetLoaded: 'No se cargaron datos de exoplanetas',
+      AddSystem: 'Agregar sistema',
+      ShowHabitableZone: 'Mostrar zonas habitables',
+      Text: 'Mostrar/Ocultar las visualizaciones de las zonas habitables. Configurar el valor actualiza automáticamente la visibilidad de todos los sistemas de exoplanetas añadidos',
+      ShowOrbit: 'Mostrar incertidumbre orbital',
+      Text2:
+        'Mostrar/Ocultar la visualización de disco de la incertidumbre de las órbitas planetarias. Configurar el valor actualiza automáticamente la visibilidad de todos los sistemas de exoplanetas añadidos',
+      ShowOneAURing: 'Mostrar anillo de tamaño 1 UA',
+      Text3:
+        'Si es verdadero, muestra un anillo con un radio de 1 UA alrededor de la estrella anfitriona de cada sistema, para usar como referencia de tamaño. Configurar el valor actualiza automáticamente la visibilidad de todos los sistemas de exoplanetas añadidos',
+      AddedSystem: 'Sistema añadido',
+      //UserControlPanel.jsx
+      UserControlPanel: 'Panel de control de usuario',
+      Loading: 'Cargando...',
+      SelectPanel: 'Seleccionar panel',
+      AddPanel: 'Agregar panel',
+      AddViaHTTP: 'Agregar vía HTTP',
+      LoadingPages: 'Cargando páginas',
+      //FlightControlPanel.jsx
+      //SkyBrowserPanel.jsx
+      AddSky: 'Agregar navegador de cielo',
+      PowerBy: 'Desarrollado por AAS WorldWide Telescope',
+      Problem: '¡Vaya! Hubo un problema al cargar datos de OpenSpace :',
+      Camara:
+        'La cámara tiene que estar dentro del sistema solar para que el navegador de cielo funcione',
+      LoadingCollection: 'Cargando colección de imágenes...',
+      //Missions.jsx
+      Mission: 'Misión',
+      phase: 'Fase',
+      milestone: 'Hitos',
+      SetTimeEnd: 'Establecer tiempo al final de ',
+      SetTimeStart: 'Establecer tiempo al principio de ',
+      SetTime: 'Establecer tiempo',
+      Overview: 'Resumen',
+      CurrentPhase: 'Fase actual',
+      ReadMore: 'Leer más',
+      NoCurrentPhase: 'No hay fase actual en esta misión',
+      SetTimeFirstCapture: 'Establecer tiempo para la próxima captura',
+      SetTimeLastCapture: 'Establecer tiempo para la última captura',
+      //KeybindingPanel.jsx
+      Name: 'Nombre: ',
+      Description: 'Descripción: ',
+      IsLocal: 'Es local: ',
+      GuiPath: 'Ruta de la GUI: ',
+      // Breaks the functionality of the keybindings panel
+      // NameDesc: 'Seleccione una tecla para ver su acción.',
+      // DescriptionDesc: 'Una descripción de la acción aparecerá aquí',
+      // IsLocalDesc: 'La información sobre si la acción es local aparecerá aquí',
+      // PathDesc: 'La ruta de las acciones aparecerá aquí',
+      keybindingsPanel: 'Visor de teclas de acceso rápido',
+      //SimulationIncrement.jsx
+      DisplayUnit: 'Unidad de visualización',
+      Negative: 'Negativo',
+      QuickAdjust: 'Ajuste rápido',
+      //FlightControlPanel.jsx
+      InteractWithArea: 'Interactúa con el área para controlar la cámara.',
+      MouseControls: 'Controles del ratón:',
+      ClickAndDrag: 'Haz clic y arrastra para rotar. Mantén',
+      ShiftToPan: 'SHIFT para desplazar',
+      CtrlToZoomOrRoll: 'CTRL para acercar (eje y) o rotar (eje x)',
+      TouchControls: 'Controles táctiles:',
+      OneFingerToRotate: '1 dedo para rotar',
+      TwoFingersToPan: '2 dedos para desplazar',
+      ThreeFingersToZoomOrRoll: '3 dedos para acercar (eje y) o rotar (eje x)',
+      FlightControl: 'Control de vuelo',
+      RotationFriction: 'Fricción de rotación',
+      Rotation: 'Rotación',
+      ZoomFriction: 'Fricción de zoom',
+      RollFriction: 'Fricción de roll',
+      Roll: 'Roll',
+      DisableControls:
+        'Controles para desactivar la fricción para diferentes movimientos de la cámara',
+      ControlArea: 'Área de control'
     }
   };
   return translation[language][key];
+};
+export const manipTime = (language, timeString) => {
+  /* it will split the time in week(Example: Sun), date(Example: 29), month(Example: Jan), year(Example: 2025), time(Example: 12:00:00), zone(GMT)
+     in that order */
+  const [week, date, month, year, time, zone] = timeString.split(' ');
+  // get the translated week name and month name from the getTranslation function
+  const translatedWeekName = getTranslation(language, week.replace(',', ''));
+  const translatedMonthName = getTranslation(language, month);
+  // return the full time in the format: "translatedWeekName, date translatedMonthName year time zone"
+  const fullTime = `${translatedWeekName}, ${date} ${translatedMonthName} ${year} ${time} ${zone}`;
+  return fullTime;
 };
