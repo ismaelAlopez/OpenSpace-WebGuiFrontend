@@ -42,7 +42,7 @@ export default function Missions() {
   // Use time that is updated every second - optimization
   const now = useSelector((state) => state.time.timeCapped);
 
-  const [displayedPhase, setDisplayedPhase] = React.useState({
+  let [displayedPhase, setDisplayedPhase] = React.useState({
     type: getTranslation(language, DisplayType.phase),
     data: overview
   });
@@ -221,7 +221,7 @@ export default function Missions() {
   function createTimeButtons() {
     switch (displayedPhase.type) {
       case DisplayType.phase: {
-        const phaseType =
+        let phaseType =
           displayedPhase.data === overview
             ? getTranslation(language, 'Mission')
             : getTranslation(language, 'phase');

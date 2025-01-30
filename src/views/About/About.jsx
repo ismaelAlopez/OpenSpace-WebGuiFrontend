@@ -27,7 +27,7 @@ const openSpaceVersion = (props) => {
 };
 
 function About(props) {
-  const language = useSelector((state) => state.language.language);
+  const lang = useSelector((state) => state.language.language);
   return (
     <Row className={styles.about}>
       <section>
@@ -35,10 +35,10 @@ function About(props) {
       </section>
       <section>
         <h1>OpenSpace</h1>
-        <p>{getTranslation(language, 'OpenSpaceDesc')}</p>
+        <p>{getTranslation(lang, 'OpenSpaceDesc')}</p>
         {openSpaceVersion(props)}
         <p>
-          {getTranslation(language, 'Footer')}
+          {getTranslation(lang, 'Footer')}
           <br />
           openspaceproject.com
         </p>

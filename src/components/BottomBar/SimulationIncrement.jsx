@@ -208,7 +208,7 @@ function SimulationIncrement() {
 
   const adjustedDelta = round10(targetDeltaTime / StepSizes[stepSize], StepPrecisions[stepSize]);
 
-  const options = Object.values(Steps).map((step) => ({
+  let options = Object.values(Steps).map((step) => ({
     value: step,
     label: getTranslation(language, step),
     isSelected: step === stepSize

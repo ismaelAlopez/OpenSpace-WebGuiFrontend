@@ -69,11 +69,9 @@ function ScreenSpaceRenderablePanel() {
   }
 
   function popover() {
-    const slideNameLabel = <span>{getTranslation(language, 'SlideNameLabel')}</span>;
+    let slideNameLabel = <span>{getTranslation(language, 'SlideNameLabel')}</span>;
     const slideURLLabel = <span>URL</span>;
-    const noSlidesLabel = (
-      <CenteredLabel>{getTranslation(language, 'NoSlidesLabel')}</CenteredLabel>
-    );
+    let noSlidesLabel = <CenteredLabel>{getTranslation(language, 'NoSlidesLabel')}</CenteredLabel>;
 
     let slideContent;
     if (renderables.length === 0) {

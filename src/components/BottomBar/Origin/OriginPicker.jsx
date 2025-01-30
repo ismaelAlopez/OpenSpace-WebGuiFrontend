@@ -59,7 +59,6 @@ import Picker from '../Picker';
 import FocusEntry from './FocusEntry';
 
 import styles from './OriginPicker.scss';
-import { get } from 'lodash';
 
 const NavigationActions = {
   Focus: 'Focus',
@@ -420,7 +419,7 @@ function OriginPicker() {
     const sortedDefaultList = defaultList.slice(0).sort((a, b) => a.name.localeCompare(b.name));
     const sortedNodes = searchableNodes.slice(0).sort((a, b) => a.name.localeCompare(b.name));
 
-    const searchPlaceholder = {
+    let searchPlaceholder = {
       Focus: getTranslation(language, 'FocusSearch'),
       Anchor: getTranslation(language, 'AnchorSearch'),
       Aim: getTranslation(language, 'AimSearch')

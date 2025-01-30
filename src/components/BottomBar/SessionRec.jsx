@@ -235,9 +235,9 @@ function SessionRec() {
   function popover() {
     const options = Object.values(fileList).map((fname) => ({ value: fname, label: fname }));
 
-    const fileNameLabel = <span>{getTranslation(language, 'NameOfRec')}</span>;
+    let fileNameLabel = <span>{getTranslation(language, 'NameOfRec')}</span>;
     const fpsLabel = <span>FPS</span>;
-    const textFormatLabel = <span>{getTranslation(language, 'TextFile')}</span>;
+    let textFormatLabel = <span>{getTranslation(language, 'TextFile')}</span>;
 
     return (
       <Popover

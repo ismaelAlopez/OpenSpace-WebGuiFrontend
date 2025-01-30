@@ -36,9 +36,7 @@ function ContextSection({ expansionIdentifier }) {
     return '';
   });
 
-  const focusOrAnchor = aim
-    ? getTranslation(language, 'Anchor')
-    : getTranslation(language, 'Focus');
+  let focusOrAnchor = aim ? getTranslation(language, 'Anchor') : getTranslation(language, 'Focus');
   return (
     <>
       {anchor && (

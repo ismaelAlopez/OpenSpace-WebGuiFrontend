@@ -101,7 +101,7 @@ export default function FlightControlPanel() {
     const zoomButtonColor = zoomFriction ? '#222' : '#888';
     const rollButtonColor = rollFriction ? '#222' : '#888';
 
-    const infoBoxContent = (
+    let infoBoxContent = (
       <>
         <p>{getTranslation(language, 'InteractWithArea')}</p> <br />
         <p>

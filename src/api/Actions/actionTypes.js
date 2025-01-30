@@ -1,5 +1,3 @@
-import { setLanguage } from '.';
-
 /* All the action types are collected here, to make it easier for debugging. */
 const actionTypes = {
   // action types for property tree

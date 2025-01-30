@@ -126,7 +126,7 @@ Place.propTypes = {
 
 function GeoPositionPanel() {
   //get the current language
-  const language = useSelector((state) => state.language.language);
+  const lang = useSelector((state) => state.language.language);
   const [inputValue, setInputValue] = useLocalStorageState('inputValue', '');
   const [places, setPlaces] = useLocalStorageState('places', undefined);
   const [addedSceneGraphNodes, setAddedSceneGraphNodes] = useLocalStorageState(
@@ -139,7 +139,7 @@ function GeoPositionPanel() {
   const [interaction, setInteraction] = useLocalStorageState('interaction', Interaction.flyTo);
   const [currentAnchor, setCurrentAnchor] = useLocalStorageState('anchor', 'Earth');
   const [customNodeCounter, setCustomNodeCounter] = useLocalStorageState('counter', 0);
-  const options = ['Earth'];
+  let options = ['Earth'];
 
   const luaApi = useSelector((state) => state.luaApi);
   const popoverVisible = useSelector((state) => state.local.popovers.geoposition.visible);
@@ -263,16 +263,16 @@ function GeoPositionPanel() {
             <HorizontalDelimiter />
             <div className={styles.searchField}>
               <Input
-                placeholder={getTranslation(language, 'SearchPlace')}
+                placeholder={getTranslation(lang, 'SearchPlace')}
                 onEnter={() => getPlaces()}
                 onChange={(e) => {
                   setInputValue(e.target.value);
                 }}
                 clearable
               />
-              <Button onClick={() => getPlaces()}>{getTranslation(language, 'Search')}</Button>
+              <Button onClick={() => getPlaces()}>{getTranslation(lang, 'Search')}</Button>
             </div>
-            <p className={styles.resultsTitle}>{getTranslation(language, 'Results')}</p>
+            <p className={styles.resultsTitle}>{getTranslation(lang, 'Results')}</p>
             {places &&
               (places.length < 4 ? (
                 places?.map?.((place) => {
@@ -288,7 +288,7 @@ function GeoPositionPanel() {
                   );
                 })
               ) : (
-                <FilterList searchText={getTranslation(language, 'FilterResults')} height='210px'>
+                <FilterList searchText={getTranslation(lang, 'FilterResults')} height='210px'>
                   <FilterListData>
                     {places?.map?.((place) => {
                       const address = place.attributes.LongLabel;
@@ -316,11 +316,11 @@ function GeoPositionPanel() {
             >
               <HorizontalDelimiter />
               <p className={styles.resultsTitle} style={{ padding: '5px 0px' }}>
-                {getTranslation(language, 'Custom')}
+                {getTranslation(lang, 'Custom')}
               </p>
               <div className={styles.latLongInput}>
                 <NumericInput
-                  placeholder={getTranslation(language, 'Lat')}
+                  placeholder={getTranslation(lang, 'Lat')}
                   onValueChanged={(value) => {
                     setLatitude(value);
                   }}
@@ -329,7 +329,7 @@ function GeoPositionPanel() {
                   max={90}
                 />
                 <NumericInput
-                  placeholder={getTranslation(language, 'Long')}
+                  placeholder={getTranslation(lang, 'Long')}
                   onValueChanged={(value) => {
                     setLongitude(value);
                   }}
@@ -338,7 +338,7 @@ function GeoPositionPanel() {
                   max={180}
                 />
                 <NumericInput
-                  placeholder={getTranslation(language, 'Alt') + '(km)'}
+                  placeholder={getTranslation(lang, 'Alt') + '(km)'}
                   onValueChanged={(value) => {
                     setAltitude(value);
                   }}
@@ -348,7 +348,7 @@ function GeoPositionPanel() {
                 />
                 <Button onClick={() => enterLatLongAlt()} className={styles.latLongButton}>
                   {/* Remove all spaces from the label so it can be use as a key for the getTranslation function */}
-                  {getTranslation(language, interaction.replaceAll(' ', ''))}
+                  {getTranslation(lang, interaction.replaceAll(' ', ''))}
                 </Button>
               </div>
             </div>
@@ -356,7 +356,7 @@ function GeoPositionPanel() {
         );
       default:
         return (
-          <CenteredLabel>{`${getTranslation(language, 'NoData')} ${currentAnchor}`}</CenteredLabel>
+          <CenteredLabel>{`${getTranslation(lang, 'NoData')} ${currentAnchor}`}</CenteredLabel>
         );
     }
   }
@@ -365,24 +365,24 @@ function GeoPositionPanel() {
     return (
       <Popover
         className={`${Picker.Popover} ${styles.geoPositionPanel}`}
-        title={getTranslation(language, 'GeoLocation')}
+        title={getTranslation(lang, 'GeoLocation')}
         closeCallback={() => togglePopover()}
         detachable
         attached
       >
         <div className={styles.content}>
           <MultiStateToggle
-            title={getTranslation(language, 'Mode')}
+            title={getTranslation(lang, 'Mode')}
             labels={Object.values(Interaction)}
             checked={interaction}
             setChecked={setInteraction}
-            infoText={getTranslation(language, 'InfoText')}
+            infoText={getTranslation(lang, 'InfoText')}
           />
           <Dropdown
             options={options}
             onChange={(anchor) => setCurrentAnchor(anchor.value)}
             value={currentAnchor}
-            placeholder={getTranslation(language, 'SelectAnchor')}
+            placeholder={getTranslation(lang, 'SelectAnchor')}
           />
           {anchorPanel(currentAnchor)}
         </div>

@@ -1,17 +1,11 @@
 import actionTypes from '../Actions/actionTypes';
-
 const initialState = {
   language: 'en'
 };
-
-const language = (state = initialState, action = {}) => {
+let language = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.setLanguage:
-      return {
-        ...state,
-        language: action.payload
-      };
-    case actionTypes.getLanguage:
+      console.info('Dispatched action: ', JSON.stringify(action));
       return {
         ...state,
         language: action.payload

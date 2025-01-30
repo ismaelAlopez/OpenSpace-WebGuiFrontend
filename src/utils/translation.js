@@ -1,5 +1,3 @@
-import { RollFrictionKey } from '../api/keys';
-
 export const getTranslation = (language, key) => {
   const translation = {
     en: {

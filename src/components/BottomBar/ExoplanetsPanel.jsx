@@ -144,7 +144,7 @@ function ExoplanetsPanel() {
   }
 
   function popover() {
-    const noContentLabel = (
+    let noContentLabel = (
       <CenteredLabel>{getTranslation(language, 'NoActiveSystem')}</CenteredLabel>
     );
     const renderables = exoplanetSystems;

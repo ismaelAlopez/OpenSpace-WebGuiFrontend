@@ -120,11 +120,11 @@ FilterListInputButton.displayName = 'FilterListInputButton';
  * FilterListShowMoreButton
  */
 function FilterListShowMoreButton({ key, toggleShowDataInstead, showDataInstead }) {
-  const language = useSelector((state) => state.language.language);
+  const lang = useSelector((state) => state.language.language);
   // Create "Less" and "More" toggle button
   return (
     <FilterListInputButton key={key} onClick={toggleShowDataInstead}>
-      {showDataInstead ? getTranslation(language, 'Less') : getTranslation(language, 'More')}
+      {showDataInstead ? getTranslation(lang, 'Less') : getTranslation(lang, 'More')}
     </FilterListInputButton>
   );
 }

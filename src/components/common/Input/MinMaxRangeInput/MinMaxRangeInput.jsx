@@ -276,7 +276,7 @@ function MinMaxRangeInput({
   }
 
   function renderTextInput() {
-    const language = useSelector((state) => state.language);
+    const language = useSelector((state) => state.language.language);
     const valueIsInvalid = enteredInvalidMinValue || enteredInvalidMaxValue;
     const valueIsOutsideRange = isMinValueOutsideRange || isMaxValueOutsideRange;
     const valueIsBad = valueIsInvalid || valueIsOutsideRange;

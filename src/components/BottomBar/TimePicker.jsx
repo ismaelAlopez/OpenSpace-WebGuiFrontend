@@ -161,7 +161,7 @@ function TimePicker() {
     let unit = 'Second';
 
     if (increment === 1 && !isNegative) {
-      const time = getTranslation(language, 'Realtime');
+      let time = getTranslation(language, 'Realtime');
       return `${time}${isPaused ? getTranslation(language, 'Pause') : ''}`;
     }
 

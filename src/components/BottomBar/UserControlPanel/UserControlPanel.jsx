@@ -64,7 +64,7 @@ function UserControlPanel() {
   }
 
   function popover() {
-    const placeholderText = getTranslation(language, 'loadingPages');
+    let placeholderText = getTranslation(language, 'loadingPages');
     const options = Object.values(panelList).map((panel) => ({
       value: panel.path,
       label: panel.name

@@ -100,17 +100,18 @@ function SystemMenu({ showTutorial }) {
   }
 
   /* Language */
-  function handleLanguageChange(language) {
-    dispatch(setLanguage(language));
+  function handleLanguageChange(newLanguage) {
+    console.info('Changing language to', newLanguage);
+    dispatch(setLanguage(newLanguage));
   }
-
-  if (!luaApi) {
-    return null;
-  } else {
-    const script = `SetLanguage('${language}')`;
-    console.info('Setting language to', language);
-    api.executeLuaScript(script);
-  }
+  React.useEffect(() => {
+    if (luaApi) {
+      console.info('Setting language to', language);
+      const script = `SetLanguage('${language}')`;
+      console.info('Executing script', script);
+      api.executeLuaScript(script);
+    }
+  }, [language]);
 
   // function saveChange() {
   //   if (!luaApi) { return; }
@@ -182,10 +183,10 @@ function SystemMenu({ showTutorial }) {
             <HorizontalDelimiter />
             {/* Language */}
             <label htmlFor='language'>{getTranslation(language, 'Language: ')} </label>
-            <button type='button' onClick={() => onClick(handleLanguageChange, 'en')}>
+            <button type='button' onClick={() => handleLanguageChange('en')}>
               {getTranslation(language, 'English')}
             </button>
-            <button type='button' onClick={() => onClick(handleLanguageChange, 'es')}>
+            <button type='button' onClick={() => handleLanguageChange('es')}>
               {getTranslation(language, 'Spanish')}
             </button>
             {/* new languages here*/}

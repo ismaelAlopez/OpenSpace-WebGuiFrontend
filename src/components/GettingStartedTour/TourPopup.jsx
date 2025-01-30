@@ -20,10 +20,8 @@ function TourPopup({ setVisibility, isVisible }) {
   const [currentSlide, setCurrentSlide] = useLocalStorageState('currentSlide', 0);
   const [isFulfilled, setIsFulfilled] = React.useState(false);
   // verifies the language and assigns the correct content
-  if (language === 'es') {
-    contents = contentsES;
-  }
-  const content = contents[currentSlide];
+  let contentData = language === 'es' ? contentsES : contents;
+  let content = contentData[currentSlide];
   const isLastSlide = currentSlide === contents.length - 1;
   const isFirstSlide = currentSlide === 0;
   const defaultSize = { width: 500, height: 350 };
@@ -139,7 +137,7 @@ function TourPopup({ setVisibility, isVisible }) {
           <div
             className={styles.progressBarContent}
             style={{
-              width: `${(100 * currentSlide) / (contents.length - 1)}%`,
+              width: `${(100 * currentSlide) / (contentData.length - 1)}%`,
               borderBottomRightRadius: `${isLastSlide ? 3 : 0}px`
             }}
           />
