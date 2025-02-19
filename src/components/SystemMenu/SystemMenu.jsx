@@ -101,17 +101,17 @@ function SystemMenu({ showTutorial }) {
 
   /* Language */
   function handleLanguageChange(newLanguage) {
-    console.info('Changing language to', newLanguage);
     dispatch(setLanguage(newLanguage));
   }
-  React.useEffect(() => {
-    if (luaApi) {
-      console.info('Setting language to', language);
-      const script = `SetLanguage('${language}')`;
-      console.info('Executing script', script);
-      api.executeLuaScript(script);
-    }
-  }, [language]);
+  /* This was set to send the language to the backend but the backend is not cable of change the language dynamically */
+  // React.useEffect(() => {
+  //   if (luaApi) {
+  //     console.info('Setting language to', language);
+  //     const script = `SetLanguage('${language}')`;
+  //     console.info('Executing script', script);
+  //     api.executeLuaScript(script);
+  //   }
+  // }, [language]);
 
   // function saveChange() {
   //   if (!luaApi) { return; }
